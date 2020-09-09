@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="car">
+	
+	<select id="getCarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
+		SELECT 
+			CAR_CODE,
+			DATE_FORMAT(now(),'%Y-%m-%d %T') AS REG_DT
+		FROM CAR
+		WHERE 1 = 1
+		<if test="keyword != null and keyword != ''">
+			AND CAR_CODE LIKE CONCAT('%',#{keyword},'%')
+		</if>		
+    </select>
+        
+    <insert id="insertCar">
+    	INSERT INTO CAR(
+    		CAR_CODE    		
+    		,REG_DT    		
+    		,UPDATE_DT
+    	)VALUES(
+    		#{carCode}    		
+    		,NOW()    		
+    		,NOW()
+    	)
+    </insert>
+    
+    <insert id="deleteCar">
+    	delete from CAR
+    	where CAR_CODE=#{carCode}
+    </insert>
+    
+   
+    
+</mapper>
