@@ -30,6 +30,17 @@
     	where CAR_CODE=#{carCode}
     </insert>
     
+    
+    <select id="getCarItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
+		SELECT 
+			CAR_CODE,
+			DATE_FORMAT(now(),'%Y-%m-%d %T') AS REG_DT
+		FROM CAR
+		WHERE 1 = 1
+		<if test="keyword != null and keyword != ''">
+			AND CAR_CODE LIKE CONCAT('%',#{keyword},'%')
+		</if>		
+    </select>
    
     
 </mapper>

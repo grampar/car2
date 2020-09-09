@@ -36,4 +36,13 @@ public class CarController {
 		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value="/getCarItemList")	
+	public ResponseEntity<RestResponse>   getCarItemList(@RequestBody(required=true) CommMap reqParam, HttpSession session) throws RestException{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getCarList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
 }
