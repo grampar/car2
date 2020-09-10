@@ -22,8 +22,15 @@ spring:
       mybatis:
         mapper-locations: classpath*:mybatis/mapper/mariadb/**/*.xml 
         type-handlers-package: kr.co.n3n.smartcity.common.typehandler
-        executor-type: batch        
-          
+        executor-type: batch
+  servlet: 
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+      
+   
 server:
   port: 9020
   context-path: /
