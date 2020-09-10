@@ -9,45 +9,17 @@ const router = new VueRouter({
   mode: "history",
   routes: [
     {
-      path: "/sample",
-      component: () => import("@/view/sample.vue"),
-    },
-    {
-      path: "/sample2",
-      component: () => import("@/view/sample2.vue"),
-    },
-    {
-      path: "/AntTest",
-      component: () => import("@/view/AntTest.vue"),
-    },
-    {
-      path: "/mediaServer",
-      component: () => import("@/view/mediaserver.vue"),
-    },
-    {
-      path: "/camera",
-      component: () => import("@/view/camera.vue"),
-    },
-    {
-      path: "/recordServer",
-      component: () => import("@/view/recordserver.vue"),
-    },
-    {
-      path: "/Storage",
-      component: () => import("@/view/storage.vue"),
-    },
-    {
-      path: "/Map",
-      component: () => import("@/view/map.vue"),
+      path: "/car",
+      component: () => import("@/view/car.vue"),
     },
   ],
 });
-
+/* 
 router.beforeEach((to, from, next) => {
   console.log("beforeach,");
   console.log("to:", to);
   console.log("from:", from);
   next();
 });
-
+ */
 export default router;

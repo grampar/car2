@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class="table-pagenation" :id="gridId + '_paging'">
+      <div class="table-pagenation" :id="gridId + '_paging'" style="display:none">
         <div class="pagination-box">
           <button type="button" class="pagination-btn pagination-first"></button>
           <button type="button" class="pagination-btn pagination-prev"></button>
@@ -26,7 +26,6 @@
     </div>
 
     <input type="file" :id="gridId + '_file'" style="display:none" />
-    <alert :is-show="isAlertShow" :message="AlertMessage" @alertclose="alertClose"></alert>
   </div>
 </template>
 
@@ -51,8 +50,6 @@ export default {
       totalGroup: 0,
       curGroup: 0,
       grid: null,
-      AlertMessage: "",
-      isAlertShow: "hidden",
       pagenavi: null,
     };
   },
@@ -108,8 +105,7 @@ export default {
               }
             });
             if (param.length === 0) {
-              me.AlertMessage = "항목을 체크해주세요.";
-              me.isAlertShow = "visible";
+              alert("항목을 체크해주세요.");
             }
 
             if (param.length > 0) {
@@ -207,13 +203,13 @@ export default {
       let tr;
       this.grid.childNodes.forEach((ele) => {
         if (ele.tagName === "TBODY") {
+          ele.removeEventListener("click", () => {});
           ele.removeEventListener("dblclick", () => {});
           this.grid.removeChild(ele);
         }
       });
 
       const meta = this.listMeta.meta;
-      const callback = this.listMeta.callback;
 
       this.listData.forEach((data) => {
         tr = document.createElement("tr");
@@ -224,7 +220,10 @@ export default {
         });
 
         tr.addEventListener("dblclick", function () {
-          callback(me, data);
+          meta.dblclickCallback(me, data);
+        });
+        tr.addEventListener("click", function () {
+          meta.clickcallback(me, data);
         });
         tbody.append(tr);
       });
@@ -377,9 +376,6 @@ export default {
       this.curPage = goPage;
       this.setCurGroup();
       this.$emit("movePage", goPage);
-    },
-    alertClose(data) {
-      this.isAlertShow = data;
     },
   },
 };

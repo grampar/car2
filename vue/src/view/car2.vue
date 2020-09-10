@@ -1,31 +1,32 @@
 <template>
   <!-- contents -->
-  <div>
+  <div class="contents-wrap">
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">Storage</h3>
-        <p class="contents-path">Home &gt; CA &gt; Storage</p>
+        <h3 class="contents-title">Camera</h3>
+        <p class="contents-path">Home &gt; CA &gt; Camera</p>
       </div>
-      <div>
-        <search
-          :search-list-data="searchListData"
-          :list-data="searchListData"
-          @searchresult="searchResult"
-          searchcolumn="Name"
-        />
+      <search
+        :search-list-data="searchListData"
+        :list-data="searchListData"
+        @searchresult="searchResult"
+        searchcolumn="Name"
+      />
 
-        <gridmain
-          :list-data="listData"
-          :list-meta="listMeta"
-          :header-buttons="headerButtons"
-          :paging-yn="paginYn"
-          gridId="grid1"
-          grid-height="60vh"
-        />
-      </div>
+      <gridmain
+        :list-data="listData"
+        :list-meta="listMeta"
+        :header-buttons="headerButtons"
+        :paging-yn="paginYn"
+        gridId="grid1"
+      />
 
-      <alert :is-show="isAlertShow" :message="AlertMessage" @alertclose="alertClose"></alert>
+      <alert
+        :is-show="isAlertShow"
+        :message="AlertMessage"
+        @alertclose="alertClose"
+      ></alert>
     </section>
     <!-- //공통영역 x -->
 
@@ -40,10 +41,12 @@
       <div class="layer-container">
         <section class="ui-layer ui-layer--large">
           <div class="ui-layer__head">
-            <h2 class="ui-layer__title">Storage 추가</h2>
+            <h2 class="ui-layer__title">Camera 추가</h2>
           </div>
           <div class="ui-layer__body" tabindex="0">
-            <div class="ui-layer__body-inner mCustomScrollbar _mCS_1 mCS_no_scrollbar">
+            <div
+              class="ui-layer__body-inner mCustomScrollbar _mCS_1 mCS_no_scrollbar"
+            >
               <div
                 id="mCSB_1"
                 class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside"
@@ -73,16 +76,16 @@
                             Name
                             <span class="table-required">필수항목</span>
                           </th>
-                          <td>
+                          <td colspan="2">
                             <div class="item-input">
-                              <input type="text" id="Name" v-model="selectedData.Name" />
+                              <input type="text" v-model="selectedData.Name" />
                             </div>
                           </td>
                           <th>
                             Label
                             <span class="table-required">필수항목</span>
                           </th>
-                          <td>
+                          <td colspan="2">
                             <div class="item-input">
                               <input type="text" v-model="selectedData.Label" />
                             </div>
@@ -90,31 +93,12 @@
                         </tr>
                         <tr>
                           <th>Description</th>
-                          <td colspan="3">
+                          <td colspan="5">
                             <div class="item-input">
-                              <input type="text" v-model="selectedData.Description" />
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>STORAGE PATH</th>
-                          <td colspan="3">
-                            <div class="item-input">
-                              <input type="text" v-model="selectedData.StoragePath" />
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>STORAGE NUM</th>
-                          <td>
-                            <div class="item-input">
-                              <input type="text" v-model="selectedData.StorageNumber" disabled />
-                            </div>
-                          </td>
-                          <th>LOWER LIMIT</th>
-                          <td>
-                            <div class="item-input">
-                              <input type="text" v-model="selectedData.LowerLimit" />
+                              <input
+                                type="text"
+                                v-model="selectedData.Description"
+                              />
                             </div>
                           </td>
                         </tr>
@@ -133,7 +117,10 @@
                       class="mCSB_dragger"
                       style="position: absolute; min-height: 30px; top: 0px; height: 0px;"
                     >
-                      <div class="mCSB_dragger_bar" style="line-height: 30px;"></div>
+                      <div
+                        class="mCSB_dragger_bar"
+                        style="line-height: 30px;"
+                      ></div>
                     </div>
                     <div class="mCSB_draggerRail"></div>
                   </div>
@@ -148,8 +135,16 @@
                 class="btn btn-c-secondary"
                 data-role="layerClose"
                 @click="showLayerPopup"
-              >취소</button>
-              <button type="button" class="btn btn-c-primary" @click="addMediaServer">확인</button>
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                class="btn btn-c-primary"
+                @click="addMediaServer"
+              >
+                확인
+              </button>
             </div>
           </div>
           <button
@@ -169,12 +164,14 @@
 </template>
 
 <script>
+import carApi from "@/api/car";
+
 export default {
-  name: "storage",
+  name: "camera",
   data() {
     return {
       listMeta: {
-        callback: function (vm, data) {
+        callback: function(vm, data) {
           vm.$options.parent.showLayerPopup(data);
         },
         meta: [
@@ -182,30 +179,36 @@ export default {
             col: "input=checkbox",
             name: "",
             size: "100px",
-            targetid: "chkgrid",
+            targetid: "chkgrid1",
           },
-          { col: "Name", name: "NAME", size: "150px" },
-          { col: "StorageNumber", name: "STORAGE NUMBER", size: "100px" },
-          { col: "StorageType", name: "Storage Type", size: "100px" },
-          { col: "StoragePath", name: "Storage Path", size: "200px" },
-          { col: "record", name: "Related Rcs", size: "" },
+          { col: "carCode", name: "Code", size: "150px" },
+          { col: "Label", name: "LABEL", size: "150px" },
+          { col: "ObjectTypeName", name: "OBJECT TYPE NAME", size: "200px" },
+          { col: "GeoInfo", name: "GEO INFO", size: "100px" },
+          { col: "rtsp", name: "RTSP", size: "" },
+          { col: "RecordCamNo", name: "RECORD CAM NO", size: "" },
+          { col: "MediaServer", name: "Related Media Servers", size: "" },
+          { col: "RecordServer", name: "Related Record Servers", size: "" },
         ],
       },
       listData: [],
       searchListData: [],
+      mediaList: [],
+      videoList: [],
+      recordList: [],
       storageList: [],
+      selectVideoList: [],
       headerButtons: [
         {
           type: "normal",
-          callback: function (vm, param) {
-            console.log(param);
+          callback: function(vm) {
             vm.$options.parent.search();
           },
           text: "Refresh",
         },
         {
           type: "normal",
-          callback: function (vm, param) {
+          callback: function(vm, param) {
             console.log(param);
             vm.$options.parent.showLayerPopup();
           },
@@ -213,7 +216,7 @@ export default {
         },
         {
           type: "checkbox",
-          callback: function (param, vm) {
+          callback: function(param, vm) {
             let names = [];
             param.forEach((ele) => {
               names.push(ele.Name);
@@ -232,7 +235,7 @@ export default {
         },
         {
           type: "Import",
-          callback: function (vm, param) {
+          callback: function(vm, param) {
             console.log(param);
             vm.$ds
               .get("object.upsert", { data: param })
@@ -248,17 +251,17 @@ export default {
         },
         {
           type: "normal",
-          callback: function (vm, param) {
+          callback: function(vm, param) {
             console.log(vm, param);
             vm.$options.parent.reqDataList(
               "object.list",
-              { query: { PlayerTypeName: "storage" } },
+              { query: { PlayerTypeName: "video" } },
               (mediaData) => {
                 let content = JSON.stringify(mediaData);
                 let a = document.createElement("a");
                 let file = new Blob([content], { type: "application/json" });
                 a.href = URL.createObjectURL(file);
-                a.download = "storage.json";
+                a.download = "camera.json";
                 a.click();
               }
             );
@@ -266,82 +269,64 @@ export default {
           text: "export",
         },
       ],
-      totalCount: 0,
-      recordCount: 10,
-      pageCount: 10,
-      curPage: 1,
       paginYn: "N",
-      AlertMessage: "",
-      isAlertShow: "hidden",
       mode: "",
       updateData: null,
-      selectedData: {
-        Name: "",
-        Label: "",
-        Description: "",
-        StorageNumber: "3",
-        StoragePath: "",
-        StorageType: "1",
-        LowerLimit: "",
-      },
     };
   },
   created() {
     this.getSearch();
+    //setTimeout(this.getSearch, 500);
   },
   mounted() {},
   updated() {},
   methods: {
     searchResult(searchData) {
       if (searchData) {
+        this.listData.splice(0, this.listData.length);
         this.listData = searchData;
       } else {
-        this.search();
+        this.getCarList();
       }
-    },
-    getSearch() {
-      this.curPage = 1;
-      this.search();
-    },
-
-    movePage(goPage) {
-      this.curPage = goPage;
-      this.search();
     },
     async search() {
       //params":{"query":{"PlayerTypeName":"video"}}
+      await this.getVideoList();
+      await this.getMediaServerList();
+      await this.getRecordServerList();
+      await this.getStorageList();
+    },
+    async getCarList() {
       let me = this;
       await this.reqDataList(
         "object.list",
-        { query: { PlayerTypeName: "storage" } },
-        (data) => {
-          me.storageList.splice(0, this.storageList.length);
+        { query: { PlayerTypeName: "video" } },
+        (videoData) => {
+          me.videoList.splice(0, me.videoList.length);
 
-          if (data.totalCount) {
-            me.totalCount = data.totalCount;
-            me.storageList = data.list;
+          if (videoData.totalCount) {
+            me.totalCount = videoData.totalCount;
+            me.videoList = videoData.list;
           } else {
-            me.totalCount = data.length;
-            me.storageList = data;
+            me.totalCount = videoData.length;
+            me.videoList = videoData;
           }
 
           me.listData.splice(0, me.listData.length);
           me.searchListData.splice(0, me.searchListData.length);
-          me.storageList.forEach((ele) => {
+          me.videoList.forEach((ele) => {
             let data = {};
             data._id = ele._id;
             data.Name = ele.Name;
             data.Label = ele.Label;
-            data.StoragePath = ele.Properties.StoragePath[0];
-            data.StorageNumber = ele.Properties.StorageNumber[0];
-            data.StorageType = ele.Properties.StorageType[0];
+            data.ObjectTypeName = ele.ObjectTypeName;
 
-            let recordString = "";
-            ele.Relations.recordserver.forEach((record, index) => {
-              if (index == 0) recordString += record;
-              else recordString += "," + record;
-            });
-            data.record = recordString;
+            data.rtsp = ele.Properties.rtsp[0];
+
+            if (ele.Relations.mediaserver)
+              data.MediaServer = ele.Relations.mediaserver[0];
+            if (ele.Relations.recordserver)
+              data.RecordServer = ele.Relations.recordserver[0];
 
             me.listData.push(data);
             me.searchListData.push(data);
@@ -349,42 +334,21 @@ export default {
         }
       );
     },
-
     showLayerPopup() {
       let layer = document.querySelector("#layerPopup");
       if (layer.style.display == "none") {
         let data;
-        if (arguments[0]) {
-          //data = this.getMediaData(arguments[0].Name);
-          data = this.getListData(this.storageList, arguments[0].Name);
-          document.querySelector("#Name").setAttribute("disabled", true);
-
-          this.selectedData.Name = data.Name;
-          this.selectedData.Label = data.Label;
-          this.selectedData.Description = data.Description;
-          this.selectedData.StoragePath = data.Properties.StoragePath[0];
-
-          this.mode = "update";
-          this.updateData = data;
-        } else {
-          this.mode = "insert";
-        }
 
         layer.style.display = "block";
         layer.style.opacity = "100";
       } else {
-        document.querySelector("#Name").removeAttribute("disabled", false);
-
-        this.selectedData.Name = "";
-        this.selectedData.Label = "";
-        this.selectedData.Description = "";
-        this.selectedData.StoragePath = "";
-
+        for (let attr in this.selectedData) {
+          this.selectedData[attr] = "";
+        }
         layer.style.display = "none";
         layer.style.opacity = "0";
       }
     },
-
     async reqDataList(method, param, callback) {
       await this.$ds
         .get(method, param)
@@ -396,63 +360,73 @@ export default {
           console.log(e);
         });
     },
+
     addMediaServer() {
-      if (!this.selectedData.Name) {
+      if (this.selectedData.Name === "") {
         this.AlertMessage = "Name값을 입력해주세요.";
         this.isAlertShow = "visible";
         return;
       }
-      if (!this.selectedData.Label) {
+      if (this.selectedData.Label === "") {
         this.AlertMessage = "Label값을 입력해주세요.";
         this.isAlertShow = "visible";
         return;
       }
 
-      if (!this.selectedData.StoragePath) {
-        this.AlertMessage = "StoragePath값을 입력해주세요.";
+      if (this.selectData.ObjectType === "") {
+        this.AlertMessage = "Object Type을 입력해주세요.";
+        this.isAlertShow = "visible";
+        return;
+      }
+
+      if (this.selectData.RtspUrl === "") {
+        this.AlertMessage = "Object Type을 입력해주세요.";
         this.isAlertShow = "visible";
         return;
       }
 
       let param, method;
+
       if (this.mode === "update") {
         method = "object.upsert";
         param = this.updateData;
         param.Label = this.selectedData.Label;
         param.Description = this.selectedData.Description;
-        param.Properties.StoragePath[0] = this.selectedData.StoragePath;
-        param.Properties.StorageNumber[0] = this.selectedData.StorageNumber;
-        param.Properties.StorageType[0] = this.selectedData.StorageType;
-        param.Properties.LowerLimit[0] = this.selectedData.LowerLimit;
+        param.Properties.ByPass[0] = this.selectedData.ByPass;
+        param.Properties.CameraID[0] = this.selectedData.CameraID;
+        param.Properties.ConnectMode[0] = this.selectedData.ConnectMode;
+
+        param.Properties.latitude[0] = this.selectedData.Latitude;
+        param.Properties.longitude[0] = this.selectedData.Longitude;
+        param.Properties.rtsp[0] = this.selectedData.RtspUrl;
+        param.Properties.MediaServerIP[0] = this.getListData(
+          this.mediaList,
+          this.selectedData.MediaServer
+        ).Properties.ip[0];
       } else {
         method = "object.save";
-        param = {
-          Name: this.selectedData.Name,
-          Label: this.selectedData.Label,
-          Description: this.selectedData.Description,
-          Relations: { recordserver: [] },
-          Properties: {
-            ErasingMethod: ["0"],
-            LowerLimit: [this.selectedData.LowerLimit],
-            StorageName: [this.selectedData.StoragePath],
-            StorageNumber: [this.selectedData.StorageNumber],
-            StoragePath: [this.selectedData.StoragePath],
-            StorageType: [this.selectedData.StorageType],
-            map: ["{}"],
-          },
-          ObjectTypeName: "recordserver",
-          PlayerTypeName: "recordserver",
-          PlayerProperties: null,
-          RelationSource: {
-            From: [],
-            Pair: [],
-            To: [],
-          },
-        };
       }
-
       let data = [];
       data.push(param);
+
+      let mediaData = this.getListData(
+        this.mediaList,
+        this.selectedData.MediaServer
+      );
+      if (mediaData) {
+        mediaData.Relations.camera.push(this.selectedData.Name);
+        data.push(mediaData);
+      }
+
+      let recordData = this.getListData(
+        this.recordList,
+        this.selectedData.RecordServer
+      );
+      if (recordData) {
+        recordData.Relations.camera.push(this.selectedData.Name);
+        recordData.Relations.storage.push(this.selectedData.RecordStorage);
+        data.push(recordData);
+      }
 
       this.$ds
         .get(method, { data: data })
@@ -476,16 +450,9 @@ export default {
       }
       return data;
     },
-    alertClose(data) {
-      this.isAlertShow = data;
-    },
-    cameraChange(value) {
+    selectChange(value) {
       let ary = value.split(",");
       this.selectVideoList = ary;
-    },
-    storageChange(value) {
-      let ary = value.split(",");
-      this.selectStorage = ary;
     },
   },
 };
