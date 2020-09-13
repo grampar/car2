@@ -1,6 +1,7 @@
 package kr.co.n3n.smartcity.common.model;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,31 @@ public class CommMap extends HashMap<String, Object> {
 		return retVal;
 	}
 	
+	public CommMap getCommMap(String key) {
+		
+		CommMap retVal=null;
+		try {
+			if(this.get(key)!=null) {
+				retVal=(CommMap)this.get(key);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return retVal;
+	}
+	
+	public List<CommMap> getListMap(String key) {
+		
+		List<CommMap> retVal=null;
+		try {
+			if(this.get(key)!=null) {
+				retVal=(List<CommMap>)this.get(key);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return retVal;
+	}
 	
 	
 }

@@ -5,11 +5,14 @@
 	<select id="getCarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
 		SELECT 
 			CAR_CODE,
-			DATE_FORMAT(now(),'%Y-%m-%d %T') AS REG_DT
+			DATE_FORMAT(REG_DT,'%Y-%m-%d %T') AS REG_DT
 		FROM CAR
 		WHERE 1 = 1
 		<if test="keyword != null and keyword != ''">
 			AND CAR_CODE LIKE CONCAT('%',#{keyword},'%')
+		</if>
+		<if test="carCode != null and carCode != ''">
+			AND CAR_CODE = #{carCode}
 		</if>		
     </select>
         
@@ -31,16 +34,141 @@
     </insert>
     
     
-    <select id="getCarItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
-		SELECT 
-			CAR_CODE,
-			DATE_FORMAT(now(),'%Y-%m-%d %T') AS REG_DT
-		FROM CAR
-		WHERE 1 = 1
-		<if test="keyword != null and keyword != ''">
-			AND CAR_CODE LIKE CONCAT('%',#{keyword},'%')
-		</if>		
+    
+    
+    
+    <select id="getCarMonCnt" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
+		SELECT B.MON, B.CNT FROM CAR A
+		INNER JOIN CAR_MON_CNT  B ON A.CAR_CODE =B.CAR_CODE 
+		WHERE B.MON =#{mon}
+		<if test="carCode != null and carCode != ''">
+			AND B.CAR_CODE = #{carCode}
+		</if>	
+			
     </select>
+    
+    <insert id="insertCarMonCnt">
+    	INSERT INTO CAR_MON_CNT(
+    		CAR_CODE 
+    		,MON
+    		,CNT    		
+    		,REG_DT    		
+    		,UPDATE_DT
+    	)VALUES(
+    		#{carCode}    		
+    		,#{mon}
+    		,#{cnt}
+    		,NOW()    		
+    		,NOW()
+    	)
+    </insert>
+    
+    <insert id="updateCarMonCnt">
+    	UPDATE CAR_MON_CNT SET    		
+    		CNT=CNT+#{cnt}
+    	WHERE CAR_CODE=#{carCode}
+    	AND MON=#{mon}
+    </insert>
+    
+    <insert id="deleteCarMonCnt">
+    	delete from CAR_MON_CNT
+    	where MON=#{mon}
+    	<if test="carCode != null and carCode != ''">
+			AND CAR_CODE=#{carCode}
+		</if>	
+    </insert>
+    
+    
+    <select id="getItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		SELECT 
+			ITEM_NO,
+			ITEM_NM,
+			ITEM_KIND,
+			OEM_PRICE ,
+			AS_PRICE ,
+			DATE_FORMAT(REG_DT,'%Y-%m-%d %T') AS REG_DT 
+		FROM ITEM
+		where 1=1
+		<if test="itemNo != null and itemNo != ''">
+			AND item_no=#{itemNo}
+		</if>	
+    </select>
+    
+    
+    <insert id="insertItem">
+    	INSERT INTO item(
+    		item_no 
+    		,item_nm
+    		,item_kind
+    		,oem_price
+    		,as_price    				
+    		,REG_DT    		
+    		,UPDATE_DT
+    	)VALUES(
+    		#{itemNo}    		
+    		,#{itemNm}
+    		,#{itemKind}
+    		,#{oemPrice}
+    		,#{asPrice}
+    		,NOW()    		
+    		,NOW()
+    	)
+    </insert>
    
+   <update id="updateItem">
+    	update item set    		 
+    		item_nm=#{itemNm}
+    		,item_kind=#{itemKind}
+    		,oem_price=#{oemPrice}
+    		,as_price=#{asPrice}		
+    	where item_no=#{itemNo}    	
+    </update>
+    
+    <select id="getCarItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		SELECT
+			B.ITEM_NO , 
+			B.ITEM_NM , 
+			B.OEM_PRICE,
+			B.AS_PRICE,
+			'CHK' CHECKED
+		FROM CAR_ITEM A
+		INNER JOIN ITEM B ON A.ITEM_NO =B.ITEM_NO 
+		WHERE A.CAR_CODE =#{carCode}
+		UNION ALL
+		SELECT 
+			B.ITEM_NO , 
+			B.ITEM_NM ,
+			B.OEM_PRICE , 
+			B.AS_PRICE,
+			'' CHECKED
+		FROM ITEM B
+		WHERE ITEM_NO NOT IN (
+			SELECT
+				B.ITEM_NO 		
+			FROM CAR_ITEM A
+			INNER JOIN ITEM B ON A.ITEM_NO =B.ITEM_NO 
+			WHERE A.CAR_CODE =#{carCode}
+		)
+		
+    </select>
+    
+    <delete id="deleteCarItem">
+    	DELETE 
+    	FROM CAR_ITEM
+    	WHERE CAR_CODE=#{carCode}
+    </delete>
+    
+    <insert id="insertCarItem">
+    	INSERT INTO CAR_ITEM(
+    		CAR_CODE
+    		,ITEM_NO    		   				
+    		,REG_DT
+    	)VALUES(
+    		#{carCode}    		
+    		,#{itemNo}    		
+    		,NOW()
+    	)
+    </insert>
+
     
 </mapper>

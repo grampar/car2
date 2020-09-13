@@ -4,35 +4,17 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">자동차</h3>
-        <div class="table-search">
-            <form name="searchForm" onsubmit="return false">
-              <table>
-                <colgroup>
-                  <col width="170px" />
-                  <col />
-                </colgroup>
-                <tbody>
-                  <tr>
-                    <th>검색</th>
-                    <td>
-                      <div class="item-input">
-                        <input type="text" v-model="Car.searchData" @keyup.enter="getBtnSearch" />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="table-search-btn">
-                <button type="button" class="btn btn-c-tertiary" @click="getBtnSearch">Search</button>
-              </div>
-              
-            </form>
-          </div>
+        <h3 class="contents-title">자동차 부속연결</h3>        
+        <span></span>
       </div>
       <div style="display:flex;flex-direction: row">
         <div style="width:50%;padding:3px;">
-          
+          <search
+            :search-list-data="Car.searchListData"
+            :list-data="Car.searchListData"
+            @searchresult="searchResultCar"
+            searchcolumn="CAR_CODE"
+          />
           <gridmain
             :list-data="Car.listData"
             :list-meta="Car.listMeta"
@@ -44,12 +26,18 @@
           />
         </div>
         <div style="width:50%;padding:3px">
+          <search
+            :search-list-data="Item.searchListData"
+            :list-data="Item.searchListData"
+            @searchresult="searchResultItem"
+            searchcolumn="ITEM_NO"
+          />
           <gridmain
-            :list-data="CarCnt.listData"
-            :list-meta="CarCnt.listMeta"
-            :header-buttons="CarCnt.headerButtons"
-            :paging-yn="CarCnt.paginYn"
-            :totalCount="CarCnt.totalCount"
+            :list-data="Item.listData"
+            :list-meta="Item.listMeta"
+            :header-buttons="Item.headerButtons"
+            :paging-yn="Item.paginYn"
+            :totalCount="Item.totalCount"
             gridId="grid2"
             grid-height="57vh"
           />
@@ -70,7 +58,7 @@ export default {
       Car: {
         listMeta: {
           clickcallback: function (vm, data) {
-            vm.$options.parent.getCarMonCntList(data.CAR_CODE);
+            vm.$options.parent.getItemList(data.CAR_CODE);
           },
           dblclickCallback: function (vm, data) {
             vm.$options.parent.showLayerPopup(data);
@@ -86,36 +74,46 @@ export default {
               vm.$options.parent.search();
             },
             text: "Refresh",
-          },
-          {
-            type:"date"
-          },
-          {
-            type: "Import",
-            callback: function (vm, file) {              
-              vm.$options.parent.upload(file);   
-            },
-            text: "Excel upload",
-          },
+          },                    
           
         ],
         paginYn: "N",
         searchData: "",
         totalCount:0,
       },
-      CarCnt: {
+      Item: {
         listMeta: {
-          callback: function (vm, data) {
+          clickcallback: function (vm, data) {
+            vm.$options.parent.getCarMonCntList(data.CAR_CODE);
+          },
+          dblclickCallback: function (vm, data) {
             vm.$options.parent.showLayerPopup(data);
           },
           meta: [
-            { col: "MON", name: "월" },
-            { col: "CNT", name: "수량" },            
+            {
+              col: "input=checkbox",
+              name: "checked",
+              size: "100px",
+              targetid: "chkgrid",
+            },
+            { col: "ITEM_NO", name: "품번" },
+            { col: "ITEM_NM", name: "품명" },            
+            { col: "OEM_PRICE", name: "Oem단가" },            
+            { col: "AS_PRICE", name: "As단가" },            
           ],
         },
         listData: [],
         searchListData: [],                
-        headerButtons: [],
+        headerButtons: [
+          {
+            type: "checkbox",
+            callback: function (vm, param) {
+              console.log(param);
+              vm.$options.parent.showLayerPopup();
+            },
+            text: "Save",
+          },
+        ],
         paginYn: "N",
         totalCount:0,
       },
@@ -129,21 +127,23 @@ export default {
   mounted() {},
   updated() {},
   methods: {
-
-    getBtnSearch() {
-      let searchTxt = this.Car.searchData.trim();
-      if (searchTxt) {
-        let newData = this.Car.searchListData.filter((ele) => {
-          var re = new RegExp(searchTxt);
-          return re.test(ele.CAR_CODE);
-        });
-
+    searchResultCar(searchData) {
+      if (searchData) {
         this.Car.listData.splice(0, this.Car.listData.length);
-        this.Car.listData = newData;
+        this.Car.listData = searchData;
       } else {
-        this.search();
+        this.carSearch();
       }
     },
+    searchResultItem(searchData) {
+      if (searchData) {
+        this.Item.listData.splice(0, this.Item.listData.length);
+        this.Item.listData = searchData;
+      } else {
+        this.getItemList();
+      }
+    },
+    
     async search() {
       //params":{"query":{"PlayerTypeName":"video"}}
       await this.carSearch();
@@ -172,23 +172,22 @@ export default {
           console.error(error);
         });
     },
-    getCarMonCntList(carCode) {
+    getItemList(carCode) {
       let me = this;
-      let param = {
-        mon:this.getMon(),
+      let param = {        
         carCode:carCode
       };
       carApi
-        .getCarMonCntList(param)
+        .getCarItemList(param)
         .then((result) => {         
-          console.log("getCarMonCntList:", result) 
+          console.log("getCarItemList:", result) 
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.CarCnt.totalCount=data.length;
-            me.CarCnt.listData.splice(0, me.CarCnt.listData.length);
-            me.CarCnt.searchListData.splice(0, me.CarCnt.searchListData.length);
-            me.CarCnt.listData = data;
-            me.CarCnt.searchListData = data;
+            me.Item.totalCount=data.length;
+            me.Item.listData.splice(0, me.Item.listData.length);
+            me.Item.searchListData.splice(0, me.Item.searchListData.length);
+            me.Item.listData = data;
+            me.Item.searchListData = data;
           } else {
             console.log(result.data.errMsg);
           }
@@ -197,29 +196,7 @@ export default {
           alert("오류발생 관리자에게 문의")
           console.error(error);
         });
-    },
-    getMon(){
-      let year=document.querySelector("#damYear").value;
-      let mon=document.querySelector("#damMon").value
-      return year+mon;
-    },
-    upload(file){
-      var frm = new FormData();
-      frm.append('file', file);
-      frm.append('mon', this.getMon());
-
-      let me=this;
-
-      carApi.carFileupload(frm)
-      .then((result)=>{
-        console.log(result);
-        me.search();        
-      })
-      .catch((error)=>{
-        alert("오류발생 관리자에게 문의")
-        console.error(error);        
-      })
-    }
+    },        
   },
 };
 </script>

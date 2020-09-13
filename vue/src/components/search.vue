@@ -20,6 +20,7 @@
       <div class="table-search-btn">
         <button type="button" class="btn btn-c-tertiary" @click="getBtnSearch">Search</button>
       </div>
+      
     </form>
   </div>
 </template>
@@ -45,12 +46,9 @@ export default {
       let searchTxt = this.searchData.trim();
       if (searchTxt) {
         let newData = this.searchListData.filter((ele) => {
-          var re = new RegExp(searchTxt);
-          if (this.searchcolumn === "DisplayName") {
-            return re.test(ele.DisplayName);
-          } else {
-            return re.test(ele.Name);
-          }
+          var re = new RegExp(searchTxt);          
+            return re.test(ele[this.searchcolumn]);
+          
         });
 
         this.$emit("searchresult", newData);

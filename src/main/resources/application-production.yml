@@ -1,28 +1,37 @@
 spring:
-  profiles: production
+  profiles: development
   product:
-    name: PROD
+    name: DEV
   http:
     encoding:
       charset: UTF-8
       enabled: true
       force: true
-
-
+  devtools: 
+    livereload: 
+      enabled: true
   datasource:
     mot-ds: 
       mot-type: mysql
-      jdbc-url: jdbc:mysql://172.16.10.43/car
-      username: n3n
-      password: n3n1004#
-      driver-class-name: org.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost/car?serverTimezone=UTC
+      username: root
+      password: dkswjs0!
+      driver-class-name: com.mysql.jdbc.Driver
       test-while-idle: true
       test-on-borrow: true       
       mybatis:
         mapper-locations: classpath*:mybatis/mapper/mariadb/**/*.xml 
         type-handlers-package: kr.co.n3n.smartcity.common.typehandler
-        executor-type: batch        
-          
+        executor-type: batch
+  servlet: 
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+      location: C:\workspace\temp
+
+      
+   
 server:
   port: 9020
   context-path: /
@@ -30,10 +39,9 @@ server:
     timeout: 3600
 
   tomcat:
-    max-threads: 10
+    max-threads: 1024
     uri-encoding: UTF-8
 
 
-  jsp-servlet:
-    init-parameters:
-      development: true
+carfile:
+  targetpath: /home/car/tomcat/webapps/car

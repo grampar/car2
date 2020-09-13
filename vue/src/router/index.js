@@ -12,6 +12,14 @@ const router = new VueRouter({
       path: "/car",
       component: () => import("@/view/car.vue"),
     },
+    {
+      path: "/item",
+      component: () => import("@/view/item.vue"),
+    },
+    {
+      path: "/car_item",
+      component: () => import("@/view/car_item.vue"),
+    },
   ],
 });
 /* 

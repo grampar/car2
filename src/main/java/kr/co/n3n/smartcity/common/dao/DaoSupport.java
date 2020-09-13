@@ -14,6 +14,10 @@ public class DaoSupport {
     @Qualifier("motSqlSessionTemplate")
     protected SqlSession sqlSession;
     
+    @Autowired
+    @Qualifier("batchSqlSessionTemplate")
+    public SqlSession batchSession;
+    
     public String getOriginalSql(String queryId, Map<String, Object> daoParam) {
         BoundSql boundSql = sqlSession.getConfiguration().getMappedStatement(queryId).getSqlSource().getBoundSql(daoParam);
         String sql = boundSql.getSql();

@@ -13,9 +13,9 @@ spring:
   datasource:
     mot-ds: 
       mot-type: mysql
-      jdbc-url: jdbc:mysql://172.16.10.43/car?serverTimezone=UTC
-      username: n3n
-      password: inno1029#
+      jdbc-url: jdbc:mysql://192.168.0.14/car?serverTimezone=UTC
+      username: root
+      password: dkswjs0!
       driver-class-name: com.mysql.jdbc.Driver
       test-while-idle: true
       test-on-borrow: true       
@@ -28,6 +28,7 @@ spring:
       enabled: true
       max-file-size: 200MB
       max-request-size: 215MB
+      location: C:\workspace\temp
 
       
    
@@ -38,10 +39,9 @@ server:
     timeout: 3600
 
   tomcat:
-    max-threads: 10
+    max-threads: 1024
     uri-encoding: UTF-8
 
 
-  jsp-servlet:
-    init-parameters:
-      development: true
+carfile:
+  targetpath: C:\workspace\project\java\car\src\main\webapp\upload\

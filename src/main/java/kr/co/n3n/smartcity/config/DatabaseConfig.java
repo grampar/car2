@@ -3,6 +3,7 @@ package kr.co.n3n.smartcity.config;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -59,10 +60,7 @@ public class DatabaseConfig {
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mybatisSettings.getMapperLocations()));
         sqlSessionFactoryBean.setTypeHandlersPackage(mybatisSettings.getTypeHandlersPackage());
-        
-        
-        
-        
+                
         return sqlSessionFactoryBean.getObject();
     }
 
@@ -71,5 +69,12 @@ public class DatabaseConfig {
     public SqlSessionTemplate sqlSessionTemplate(@Qualifier("motSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+    
+    @Bean(name = "batchSqlSessionTemplate")
+    public SqlSessionTemplate batchSqlSessionTemplate(@Qualifier("motSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+       return new SqlSessionTemplate(sqlSessionFactory, ExecutorType.BATCH);
+    }
+
+ 
 
 }

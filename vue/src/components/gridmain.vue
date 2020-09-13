@@ -51,6 +51,7 @@ export default {
       curGroup: 0,
       grid: null,
       pagenavi: null,
+      selectedData:[]
     };
   },
   watch: {
@@ -80,71 +81,106 @@ export default {
       const div = document.querySelector("#" + this.gridId + "_header");
       let me = this;
       this.headerButtons.forEach((ele) => {
-        let a = document.createElement("a");
-        a.setAttribute("class", "btn btn-c-primary");
-        a.innerText = ele.text;
-        if (ele.type == "checkbox") {
-          let targetid;
-          let meta = this.listMeta.meta;
-          for (let i = 0; i < meta.length; i++) {
-            let ele = meta[i];
-            if (ele.col === "input=checkbox") {
-              targetid = ele.targetid;
-              break;
+
+        if (ele.type == "date") {
+          let select = document.createElement("select");
+          select.setAttribute("id","damYear")
+          const today=new Date();
+
+          let startyear=2020;
+          let endyear=today.getFullYear();
+          let option;
+          for(let i=startyear;i<=endyear;i++){
+            option = document.createElement("option");
+            option.innerHTML=i;
+            option.value=i;
+            if(endyear==i){
+              option.setAttribute("selected", true);
             }
+            select.append(option);
           }
-          a.addEventListener("click", (e) => {
-            e.stopPropagation();
-            let trs = me.grid.querySelectorAll("tbody tr");
-            let param = [];
-            let checkboxs = me.grid.querySelectorAll("[id='" + targetid + "']");
-            trs.forEach((ele, index) => {
-              if (checkboxs[index].checked) {
-                let data = JSON.parse(ele.dataset.grid);
-                param.push(data);
+          div.append(select);
+
+          select = document.createElement("select");
+          select.setAttribute("id","damMon")
+          
+          let month = today.getMonth() + 1;          
+          let tmpi;
+          for(let i=1;i<=12;i++){
+            option = document.createElement("option");
+            
+            tmpi=i.toString().length==1?"0"+i:i.toString();
+            option.innerHTML=tmpi;
+            option.value=tmpi;
+            if(month==i){
+              option.setAttribute("selected", true);
+            }
+            select.append(option);
+          }
+          div.append(select);
+
+
+        }else{
+          let a = document.createElement("a");
+          a.setAttribute("class", "btn btn-c-primary");
+          a.innerText = ele.text;
+
+          //let input = me.grid.getElementsByTagName("file");
+          
+              
+
+          if (ele.type == "checkbox") {
+            let targetid;
+            let meta = this.listMeta.meta;
+            for (let i = 0; i < meta.length; i++) {
+              let ele = meta[i];
+              if (ele.col === "input=checkbox") {
+                targetid = ele.targetid;
+                break;
+              }
+            }
+            a.addEventListener("click", (e) => {
+              e.stopPropagation();
+              let trs = me.grid.querySelectorAll("tbody tr");
+              let param = [];
+              let checkboxs = me.grid.querySelectorAll("[id='" + targetid + "']");
+              trs.forEach((ele, index) => {
+                if (checkboxs[index].checked) {
+                  let data = JSON.parse(ele.dataset.grid);
+                  param.push(data);
+                }
+              });
+              if (param.length === 0) {
+                alert("항목을 체크해주세요.");
+              }
+
+              if (param.length > 0) {
+                ele.callback(param, me);
               }
             });
-            if (param.length === 0) {
-              alert("항목을 체크해주세요.");
-            }
-
-            if (param.length > 0) {
-              ele.callback(param, me);
-            }
-          });
-        } else if (ele.type === "Import") {
-          a.addEventListener("click", (e) => {
-            e.stopPropagation();
-            //let input = me.grid.getElementsByTagName("file");
+          } else if (ele.type === "Import") {
             let input = document.getElementById(this.gridId + "_file");
-            input.accept = "json/plain";
-
-            input.onchange = function (e) {
+            input.addEventListener("change", (e)=>{
               let file = e.target.files[0];
-              let reader = new FileReader();
-              reader.onload = function () {
-                try {
-                  let data = JSON.parse(reader.result);
+              ele.callback(me, file);      
+            })
 
-                  ele.callback(me, data);
-                } catch (e) {
-                  console.log(e);
-                }
-              };
+            a.addEventListener("click", (e) => {
+              e.stopPropagation();
+              input.value="";
+              input.click();
+            });        
+            
+          } else {
+            a.addEventListener("click", (e) => {
+              e.stopPropagation();
+              ele.callback(me, {});
+            });
+          }
 
-              reader.readAsText(file, "utf-f");
-            };
-
-            input.click();
-          });
-        } else {
-          a.addEventListener("click", (e) => {
-            e.stopPropagation();
-            ele.callback(me, {});
-          });
+          div.append(a);
         }
-
-        div.append(a);
+        
       });
     },
     createHeader() {
@@ -210,21 +246,29 @@ export default {
       });
 
       const meta = this.listMeta.meta;
+      const clickcallback=this.listMeta.clickcallback;
+      const dblclickCallback=this.listMeta.dblclickCallback;
 
       this.listData.forEach((data) => {
         tr = document.createElement("tr");
         tr.setAttribute("data-grid", JSON.stringify(data));
-
+        tr.setAttribute("style", "cursor:pointer")
         meta.forEach((meta) => {
           this.createBodyTd(tr, data, meta);
         });
 
-        tr.addEventListener("dblclick", function () {
-          meta.dblclickCallback(me, data);
-        });
-        tr.addEventListener("click", function () {
-          meta.clickcallback(me, data);
-        });
+        if(dblclickCallback){
+          tr.addEventListener("dblclick", function () {
+            dblclickCallback(me, data);
+          });
+        }
+        
+        if(clickcallback){
+          tr.addEventListener("click", function () {
+            clickcallback(me, data);
+          });
+        }
+        
         tbody.append(tr);
       });
 
@@ -233,10 +277,18 @@ export default {
     createBodyTd(tr, data, meta) {
       let td = document.createElement("td");
       let me = this;
-      if (meta.col == "input=checkbox") {
+      if (meta.col == "input=checkbox") {        
         let checkbox = document.createElement("input");
-        checkbox.setAttribute("type", "checkbox");
+        checkbox.setAttribute("type", "checkbox");        
         checkbox.setAttribute("id", meta.targetid);
+        if(meta.name==="checked"){
+          if(data[meta.name]==="chk"){            
+            checkbox.setAttribute("checked", true);
+          }          
+        }
+        checkbox.addEventListener("click", e=>{
+          console.log(e);
+        })
         td.append(checkbox);
       } else if (meta.col == "input=button") {
         let button = document.createElement("button");
