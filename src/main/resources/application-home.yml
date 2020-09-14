@@ -13,9 +13,9 @@ spring:
   datasource:
     mot-ds: 
       mot-type: mysql
-      jdbc-url: jdbc:mysql://172.16.10.43/car?serverTimezone=UTC
-      username: n3n
-      password: inno1029#
+      jdbc-url: jdbc:mysql://192.168.0.14/car?serverTimezone=UTC
+      username: root
+      password: dkswjs0!
       driver-class-name: com.mysql.jdbc.Driver
       test-while-idle: true
       test-on-borrow: true       
