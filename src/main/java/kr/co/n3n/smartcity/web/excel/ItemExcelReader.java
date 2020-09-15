@@ -31,9 +31,18 @@ public class ItemExcelReader extends AbstractExcelReader {
             }else if(columnindex==2) {
                 map.put("itemNm", value);
             }else if(columnindex==3) {
-                map.put("oemPrice", value);
+            	if(value.equals("")) {
+            		map.put("oemPrice", 0);
+            	}else {
+            		map.put("oemPrice", value);
+            	}
+                
             }else {
-            	map.put("asPrice", value);
+            	if(value.equals("")) {
+            		map.put("asPrice", 0);
+            	}else {
+            		map.put("asPrice", value);
+            	}            	
             }            
         }
         

@@ -45,4 +45,24 @@ export default {
       },
     });
   },
+  getItemMonCkdList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemMonCkdList`, payload);
+  },
+  itemMonCkdUpload: (frm) => {
+    return HTTP.post(`${TargetURL}/itemMonCkdUpload`, frm, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+  getItemMonAsList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemMonAsList`, payload);
+  },
+  itemMonAsUpload: (frm) => {
+    return HTTP.post(`${TargetURL}/itemMonAsUpload`, frm, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };

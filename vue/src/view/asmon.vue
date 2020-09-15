@@ -4,7 +4,7 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">월별 rcar</h3>
+        <h3 class="contents-title">월별 as</h3>
       </div>
       <search
         :search-list-data="searchListData"
@@ -30,7 +30,7 @@
 <script>
 import carApi from "@/api/car";
 export default {
-  name: "rcar",
+  name: "asmon",
   data() {
     return {
       listMeta: {
@@ -113,9 +113,9 @@ export default {
         mon: this.getMon(),
       };
       carApi
-        .getItemMonRcarList(param)
+        .getItemMonAsList(param)
         .then((result) => {
-          console.log("getItemMonRcarList:", result);
+          console.log("getItemMonCkdList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
             me.totalCount = data.length;
@@ -144,7 +144,7 @@ export default {
       let me = this;
 
       carApi
-        .itemMonRcarUpload(frm)
+        .itemMonAsUpload(frm)
         .then((result) => {
           console.log(result);
           me.search();

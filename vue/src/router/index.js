@@ -24,6 +24,14 @@ const router = new VueRouter({
       path: "/rcar",
       component: () => import("@/view/rcar.vue"),
     },
+    {
+      path: "/ckd",
+      component: () => import("@/view/ckd.vue"),
+    },
+    {
+      path: "/asmon",
+      component: () => import("@/view/asmon.vue"),
+    },
   ],
 });
 /* 

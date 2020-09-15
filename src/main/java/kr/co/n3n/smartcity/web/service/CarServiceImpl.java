@@ -142,7 +142,7 @@ public class CarServiceImpl implements CarService {
 	}
 
 
-
+	@Transactional
 	@Override
 	public int insertCarItem(CommMap reqParam) throws Exception {
 		// TODO Auto-generated method stub
@@ -174,7 +174,7 @@ public class CarServiceImpl implements CarService {
 	}
 
 
-
+	@Transactional
 	@Override
 	public int insertItemMonRcar(List<CommMap> reqParam, String mon) throws Exception {
 		// TODO Auto-generated method stub
@@ -189,6 +189,70 @@ public class CarServiceImpl implements CarService {
 			daoParam.put("cnt", map.get("cnt"));
 			
 			commonDao.batchInsert("car.insertItemMonRcar", daoParam);						
+		}
+		
+		commonDao.getSession().flushStatements();
+		
+		return 1;
+	}
+	
+	@Override
+	public List<CommMap> getItemMonCkdList(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getItemMonCkdList", reqParam);
+					        
+		return list;
+	}
+
+
+	@Transactional
+	@Override
+	public int insertItemMonCkd(List<CommMap> reqParam, String mon) throws Exception {
+		// TODO Auto-generated method stub
+		CommMap checkMap;
+		
+		CommMap daoParam=new CommMap();
+		daoParam.put("mon", mon);
+		commonDao.batchInsert("car.deleteItemMonCkd", daoParam);
+		
+		for(CommMap map:reqParam) {
+			daoParam.put("itemNo", map.get("itemNo"));
+			daoParam.put("cnt", map.get("cnt"));
+			
+			commonDao.batchInsert("car.insertItemMonCkd", daoParam);						
+		}
+		
+		commonDao.getSession().flushStatements();
+		
+		return 1;
+	}
+	
+	@Override
+	public List<CommMap> getItemMonAsList(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getItemMonAsList", reqParam);
+					        
+		return list;
+	}
+
+
+	@Transactional
+	@Override
+	public int insertItemMonAs(List<CommMap> reqParam, String mon) throws Exception {
+		// TODO Auto-generated method stub
+		CommMap checkMap;
+		
+		CommMap daoParam=new CommMap();
+		daoParam.put("mon", mon);
+		commonDao.batchInsert("car.deleteItemMonAs", daoParam);
+		
+		for(CommMap map:reqParam) {
+			daoParam.put("itemNo", map.get("itemNo"));
+			daoParam.put("cnt", map.get("cnt"));
+			
+			commonDao.batchInsert("car.insertItemMonAs", daoParam);						
 		}
 		
 		commonDao.getSession().flushStatements();

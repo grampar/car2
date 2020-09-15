@@ -55,7 +55,7 @@ public abstract class AbstractExcelReader {
 	    		value=cell.getNumericCellValue()+"";
 	    		break;
 	    	case BLANK:
-	    		value=cell.getBooleanCellValue()+"";
+	    		value="";
 	    		break; 
 	    	case ERROR:
 	    		value=cell.getErrorCellString();

@@ -21,7 +21,9 @@ import kr.co.n3n.smartcity.common.exception.RestException;
 import kr.co.n3n.smartcity.common.model.CommMap;
 import kr.co.n3n.smartcity.common.util.RestResponse;
 import kr.co.n3n.smartcity.config.FileConfig;
+import kr.co.n3n.smartcity.web.excel.AsExcelReader;
 import kr.co.n3n.smartcity.web.excel.CarExcelReader;
+import kr.co.n3n.smartcity.web.excel.CkdrExcelReader;
 import kr.co.n3n.smartcity.web.excel.ItemExcelReader;
 import kr.co.n3n.smartcity.web.excel.RcarExcelReader;
 import kr.co.n3n.smartcity.web.service.CarService;
@@ -153,6 +155,60 @@ public class CarController {
 		List<CommMap> list=itemReader.readExcel(path, startRow);
 		
 		int ret=carService.insertItemMonRcar(list, mon);
+		
+		
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getItemMonCkdList")	
+	public ResponseEntity<RestResponse>   getItemMonCkdList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getItemMonCkdList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/itemMonCkdUpload", method=RequestMethod.POST)	
+	public ResponseEntity<RestResponse>   itemMonCkdUpload(@RequestParam("file") MultipartFile multipartFile, @RequestParam("mon") String mon) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		
+		FileUpload fileUpload=new FileUpload(multipartFile);
+		String path=fileUpload.uploadProcess(fileConfig.getTargetpath());
+		CkdrExcelReader itemReader=new CkdrExcelReader();
+		int startRow=1;
+		List<CommMap> list=itemReader.readExcel(path, startRow);
+		
+		int ret=carService.insertItemMonCkd(list, mon);
+		
+		
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getItemMonAsList")	
+	public ResponseEntity<RestResponse>   getItemMonAsList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getItemMonAsList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/itemMonAsUpload", method=RequestMethod.POST)	
+	public ResponseEntity<RestResponse>   itemMonAsUpload(@RequestParam("file") MultipartFile multipartFile, @RequestParam("mon") String mon) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		
+		FileUpload fileUpload=new FileUpload(multipartFile);
+		String path=fileUpload.uploadProcess(fileConfig.getTargetpath());
+		AsExcelReader itemReader=new AsExcelReader();
+		int startRow=5;
+		List<CommMap> list=itemReader.readExcel(path, startRow);
+		
+		int ret=carService.insertItemMonAs(list, mon);
 		
 		
 		

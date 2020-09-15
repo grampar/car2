@@ -27,7 +27,11 @@ public class CarExcelReader extends AbstractExcelReader {
             if(columnindex==0) {
             	map.put("carCode", value);
             }else {
-            	map.put("cnt", value);
+            	if(value.equals("")) {
+            		map.put("cnt", 0);
+            	}else {
+            		map.put("cnt", value);
+            	}
             }            
         }
         
