@@ -169,6 +169,43 @@
     		,NOW()
     	)
     </insert>
+    
+    <select id="getItemMonRcarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		select 
+			a.ITEM_NO
+			,b.ITEM_NM
+			,a.MON
+			,a.CNT
+			,a.REG_DT
+		FROM ITEM_MON_RCAR A
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE MON=#{mon}
+		<if test="itemNo != null and itemNo != ''">
+			AND A.ITEM_NO=#{itemNo}
+		</if>
+		ORDER BY A.ITEM_NO			
+    </select>
+    
+    
+    <delete id="deleteItemMonRcar">
+    	DELETE 
+    	FROM ITEM_MON_RCAR
+    	WHERE MON=#{mon}
+    </delete>
+    
+    <insert id="insertItemMonRcar">
+    	INSERT INTO ITEM_MON_RCAR(
+    		ITEM_NO    		   				
+    		, MON
+    		, CNT
+    		,REG_DT
+    	)VALUES(
+    		#{itemNo}    		
+    		,#{mon}    		
+    		,#{cnt}
+    		,NOW()
+    	)
+    </insert>
 
     
 </mapper>

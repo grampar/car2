@@ -43,23 +43,26 @@ public abstract class AbstractExcelReader {
 	
 	protected String getCellValue(XSSFCell cell) {
 		String value="";
-		switch(cell.getCellType()) {
-    	case FORMULA:
-    		value=cell.getCellFormula();
-    		break;
-    	case STRING:
-    		value=cell.getStringCellValue();
-    		break;
-    	case NUMERIC:
-    		value=cell.getNumericCellValue()+"";
-    		break;
-    	case BLANK:
-    		value=cell.getBooleanCellValue()+"";
-    		break; 
-    	case ERROR:
-    		value=cell.getErrorCellString();
-    		break; 
-    	}
+		if(cell!=null) {			
+			switch(cell.getCellType()) {
+	    	case FORMULA:
+	    		value=cell.getCellFormula();
+	    		break;
+	    	case STRING:
+	    		value=cell.getStringCellValue();
+	    		break;
+	    	case NUMERIC:
+	    		value=cell.getNumericCellValue()+"";
+	    		break;
+	    	case BLANK:
+	    		value=cell.getBooleanCellValue()+"";
+	    		break; 
+	    	case ERROR:
+	    		value=cell.getErrorCellString();
+	    		break; 
+	    	}
+		}
+		
 		return value;
 	}
 	

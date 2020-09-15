@@ -4,7 +4,7 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">자동차 부속연결</h3>        
+        <h3 class="contents-title">자동차 부속연결</h3>
         <span></span>
       </div>
       <div style="display:flex;flex-direction: row">
@@ -61,6 +61,7 @@ export default {
             vm.$options.parent.getItemList(data.CAR_CODE);
           },
           dblclickCallback: function (vm, data) {
+            console.log(vm, data);
             vm.$options.parent.showLayerPopup(data);
           },
           meta: [{ col: "CAR_CODE", name: "Code", size: "150px" }],
@@ -74,21 +75,15 @@ export default {
               vm.$options.parent.search();
             },
             text: "Refresh",
-          },                    
-          
+          },
         ],
         paginYn: "N",
         searchData: "",
-        totalCount:0,
+        totalCount: 0,
+        carCode: "",
       },
       Item: {
         listMeta: {
-          clickcallback: function (vm, data) {
-            vm.$options.parent.getCarMonCntList(data.CAR_CODE);
-          },
-          dblclickCallback: function (vm, data) {
-            vm.$options.parent.showLayerPopup(data);
-          },
           meta: [
             {
               col: "input=checkbox",
@@ -96,26 +91,30 @@ export default {
               size: "100px",
               targetid: "chkgrid",
             },
-            { col: "ITEM_NO", name: "품번" },
-            { col: "ITEM_NM", name: "품명" },            
-            { col: "OEM_PRICE", name: "Oem단가" },            
-            { col: "AS_PRICE", name: "As단가" },            
+            { col: "ITEM_NO", name: "품번", size: "150px" },
+            { col: "ITEM_NM", name: "품명", size: "400px" },
+            { col: "OEM_PRICE", name: "Oem단가", size: "120px" },
+            { col: "AS_PRICE", name: "As단가" },
           ],
         },
         listData: [],
-        searchListData: [],                
+        searchListData: [],
         headerButtons: [
           {
             type: "checkbox",
-            callback: function (vm, param) {
-              console.log(param);
-              vm.$options.parent.showLayerPopup();
+            callback: function (param, vm) {
+              console.log(vm, param);
+              if (param.length == 0) {
+                alert("아이템을 선택해주세요");
+                return;
+              }
+              vm.$options.parent.insertCatItem(param);
             },
             text: "Save",
           },
         ],
         paginYn: "N",
-        totalCount:0,
+        totalCount: 0,
       },
       mode: "",
     };
@@ -143,7 +142,7 @@ export default {
         this.getItemList();
       }
     },
-    
+
     async search() {
       //params":{"query":{"PlayerTypeName":"video"}}
       await this.carSearch();
@@ -154,11 +153,10 @@ export default {
       let param = {};
       carApi
         .getCarList(param)
-        .then((result) => {          
-          
+        .then((result) => {
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.Car.totalCount=data.length;
+            me.Car.totalCount = data.length;
             me.Car.listData.splice(0, me.Car.listData.length);
             me.Car.searchListData.splice(0, me.Car.searchListData.length);
             me.Car.listData = data;
@@ -168,22 +166,23 @@ export default {
           }
         })
         .catch((error) => {
-          alert("오류발생 관리자에게 문의")
+          alert("오류발생 관리자에게 문의");
           console.error(error);
         });
     },
     getItemList(carCode) {
       let me = this;
-      let param = {        
-        carCode:carCode
+      me.Car.carCode = carCode;
+      let param = {
+        carCode: carCode,
       };
       carApi
         .getCarItemList(param)
-        .then((result) => {         
-          console.log("getCarItemList:", result) 
+        .then((result) => {
+          console.log("getCarItemList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.Item.totalCount=data.length;
+            me.Item.totalCount = data.length;
             me.Item.listData.splice(0, me.Item.listData.length);
             me.Item.searchListData.splice(0, me.Item.searchListData.length);
             me.Item.listData = data;
@@ -193,10 +192,14 @@ export default {
           }
         })
         .catch((error) => {
-          alert("오류발생 관리자에게 문의")
+          alert("오류발생 관리자에게 문의");
           console.error(error);
         });
-    },        
+    },
+    insertCatItem(param) {
+      let data = { carCode: this.Car.carCode, list: param };
+      carApi.insertCarItem(data);
+    },
   },
 };
 </script>

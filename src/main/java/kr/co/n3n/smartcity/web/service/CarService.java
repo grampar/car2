@@ -20,5 +20,8 @@ public interface CarService {
 	public List<CommMap> getCarItemList(CommMap reqParam) throws Exception;
 	public int insertCarItem(CommMap reqParam) throws Exception;
 	
+	public List<CommMap> getItemMonRcarList(CommMap reqParam) throws Exception;
+	public int insertItemMonRcar(List<CommMap> reqParam, String mon) throws Exception;
+	
 	
 }

@@ -4,7 +4,7 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">아이템</h3>        
+        <h3 class="contents-title">아이템</h3>
       </div>
       <search
         :search-list-data="searchListData"
@@ -14,14 +14,13 @@
       />
       <gridmain
         :list-data="listData"
-        :list-meta="listMeta"        
-        :total-count="totalCount"        
+        :list-meta="listMeta"
+        :total-count="totalCount"
         :header-buttons="headerButtons"
-        :paging-yn="paginYn"        
+        :paging-yn="paginYn"
         gridId="grid1"
         grid-height="55vh"
       />
-
     </section>
     <!-- //공통영역 x -->
 
@@ -85,7 +84,7 @@
                               <input type="text" v-model="selectedData.itemNm" />
                             </div>
                           </td>
-                        </tr>                        
+                        </tr>
                         <tr>
                           <th>
                             구분
@@ -95,8 +94,8 @@
                             <div class="item-input">
                               <input type="text" v-model="selectedData.itemKind" />
                             </div>
-                          </td>                          
-                        </tr>  
+                          </td>
+                        </tr>
                         <tr>
                           <th>
                             OEM 단가
@@ -116,7 +115,7 @@
                               <input type="text" v-model="selectedData.asPrice" />
                             </div>
                           </td>
-                        </tr>        
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -181,13 +180,13 @@ export default {
           {
             col: "input=checkbox",
             name: "",
-            size: "100px",
+            size: "50px",
             targetid: "chkgrid",
           },
-          { col: "ITEM_NO", name: "품번", size: "150px" },
-          { col: "ITEM_NM", name: "품명", size: "200px" },
+          { col: "ITEM_NO", name: "품번", size: "300px" },
+          { col: "ITEM_NM", name: "품명", size: "500px" },
           { col: "ITEM_KIND", name: "구분", size: "100px" },
-          { col: "OEM_PRICE", name: "Oem 단가", size: "" },
+          { col: "OEM_PRICE", name: "Oem 단가", size: "150px" },
           { col: "AS_PRICE", name: "As 단가", size: "" },
         ],
       },
@@ -208,25 +207,24 @@ export default {
             vm.$options.parent.showLayerPopup();
           },
           text: "Add",
-        },          
-        {
-            type: "Import",
-            callback: function (vm, file) {              
-              vm.$options.parent.upload(file);   
-            },
-            text: "Excel upload",
         },
-
+        {
+          type: "Import",
+          callback: function (vm, file) {
+            vm.$options.parent.upload(file);
+          },
+          text: "Excel upload",
+        },
       ],
       totalCount: 0,
-      paginYn: "N",      
-      mode: "",      
+      paginYn: "N",
+      mode: "",
       selectedData: {
         itemNo: "",
         itemNm: "",
         itemKind: "",
         oemPrice: 0,
-        asPrice: 0,        
+        asPrice: 0,
       },
     };
   },
@@ -245,54 +243,50 @@ export default {
         this.search();
       }
     },
-    getSearch() {      
+    getSearch() {
       this.search();
     },
     async search() {
       //params":{"query":{"PlayerTypeName":"video"}}
 
       await this.getItemList();
-      
     },
     async getItemList() {
       let me = this;
-      carApi.getItemList({})
-      .then(result=>{
-        console.log("getItemList:",result);
-        if (result.data.retCode === "0") {
-          let data = result.data.data;
-          me.totalCount = data.length;
-        
-          me.listData.splice(0, me.listData.length);
-          me.searchListData.splice(0, me.searchListData.length);
-          me.listData=data;
-          me.searchListData=data;
-        }else{
-          console.log(result.data.errMsg);
-        }
-        
+      carApi
+        .getItemList({})
+        .then((result) => {
+          console.log("getItemList:", result);
+          if (result.data.retCode === "0") {
+            let data = result.data.data;
+            me.totalCount = data.length;
 
-
-      }).catch(error=>{
-        console.error("getItemList:",error);
-      })
-      
-    },    
+            me.listData.splice(0, me.listData.length);
+            me.searchListData.splice(0, me.searchListData.length);
+            me.listData = data;
+            me.searchListData = data;
+          } else {
+            console.log(result.data.errMsg);
+          }
+        })
+        .catch((error) => {
+          console.error("getItemList:", error);
+        });
+    },
     showLayerPopup() {
       let layer = document.querySelector("#layerPopup");
       if (layer.style.display == "none") {
         let data;
-        if (arguments[0]) {          
+        if (arguments[0]) {
           data = arguments[0];
           document.querySelector("#itemNo").setAttribute("disabled", true);
           this.selectedData.itemNo = data.ITEM_NO;
           this.selectedData.itemNm = data.ITEM_NM;
           this.selectedData.itemKind = data.ITEM_KIND;
           this.selectedData.oemPrice = data.OEM_PRICE;
-          this.selectedData.asPrice = data.AS_PRICE;          
+          this.selectedData.asPrice = data.AS_PRICE;
 
           this.mode = "update";
-          
         } else {
           this.mode = "insert";
         }
@@ -306,8 +300,7 @@ export default {
         this.selectedData.itemKind = "";
         this.selectedData.oemPrice = "";
         this.selectedData.asPrice = "";
-        
-        
+
         layer.style.display = "none";
         layer.style.opacity = "0";
       }
@@ -333,18 +326,18 @@ export default {
         alert("as 단가를 입력해주세요");
         return;
       }
-      
-      let me=this;
-      carApi.ItemInsert(this.selectedData)
-      .then(result=>{
-        console.log("ItemInsert:", result);
-        this.showLayerPopup();
-        me.search();        
-      }).catch(error=>{
-        console.error(error);
-      })
 
-     
+      let me = this;
+      carApi
+        .ItemInsert(this.selectedData)
+        .then((result) => {
+          console.log("ItemInsert:", result);
+          this.showLayerPopup();
+          me.search();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     getListData(dataList, Name) {
       let cnt = dataList.length;
@@ -357,21 +350,22 @@ export default {
       }
       return data;
     },
-    upload(file){
+    upload(file) {
       var frm = new FormData();
-      frm.append('file', file);      
-      let me=this;
+      frm.append("file", file);
+      let me = this;
 
-      carApi.itemFileupload(frm)
-      .then((result)=>{
-        console.log(result);
-        me.search();        
-      })
-      .catch((error)=>{
-        alert("오류발생 관리자에게 문의")
-        console.error(error);        
-      })
-    }
+      carApi
+        .itemFileupload(frm)
+        .then((result) => {
+          console.log(result);
+          me.search();
+        })
+        .catch((error) => {
+          alert("오류발생 관리자에게 문의");
+          console.error(error);
+        });
+    },
   },
 };
 </script>

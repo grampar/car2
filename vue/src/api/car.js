@@ -3,15 +3,14 @@ import HTTP from "@/api";
 const TargetURL = "/car";
 
 export default {
-  
   getCarList: (payload) => {
     return HTTP.post(`${TargetURL}/getCarList`, payload);
   },
-  carFileupload:(frm) =>{
+  carFileupload: (frm) => {
     return HTTP.post(`${TargetURL}/carUpload`, frm, {
-      headers:{
-        'Content-Type':'multipart/form-data'
-      }
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   },
   getCarMonCntList: (payload) => {
@@ -23,14 +22,27 @@ export default {
   ItemInsert: (payload) => {
     return HTTP.post(`${TargetURL}/ItemInsert`, payload);
   },
-  itemFileupload:(frm) =>{
+  itemFileupload: (frm) => {
     return HTTP.post(`${TargetURL}/itemUpload`, frm, {
-      headers:{
-        'Content-Type':'multipart/form-data'
-      }
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   },
   getCarItemList: (payload) => {
     return HTTP.post(`${TargetURL}/getCarItemList`, payload);
+  },
+  insertCarItem: (payload) => {
+    return HTTP.post(`${TargetURL}/insertCarItem`, payload);
+  },
+  getItemMonRcarList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemMonRcarList`, payload);
+  },
+  itemMonRcarUpload: (frm) => {
+    return HTTP.post(`${TargetURL}/itemMonRcarUpload`, frm, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };

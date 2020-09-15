@@ -20,6 +20,10 @@ const router = new VueRouter({
       path: "/car_item",
       component: () => import("@/view/car_item.vue"),
     },
+    {
+      path: "/rcar",
+      component: () => import("@/view/rcar.vue"),
+    },
   ],
 });
 /* 
