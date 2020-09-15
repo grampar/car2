@@ -5,6 +5,7 @@ import gridtree from "./components/gridtree.vue";
 import search from "./components/search.vue";
 import axios from "axios";
 import App from "./App.vue";
+import vuetify from "@/plugins/vuetify"; // path to vuetify export
 
 Vue.config.productionTip = false;
 
@@ -17,4 +18,5 @@ Vue.component("search", search);
 new Vue({
   render: (h) => h(App),
   router,
+  vuetify,
 }).$mount("#app");
