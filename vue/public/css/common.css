@@ -929,7 +929,7 @@ body {
 }
 
 .contents {
-  overflow-y: scroll;
+  overflow-y: none;
   position: relative;
   box-sizing: border-box;
   height: 100%;
@@ -945,7 +945,7 @@ body {
 
 .contents-info {
   position: relative;
-  margin-bottom: 28px;
+  margin-bottom: 0px;
   line-height: 1;
 }
 .contents-title {

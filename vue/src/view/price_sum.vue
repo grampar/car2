@@ -15,7 +15,7 @@
         :excel-meta="excelMeta"
         excel-name="매출현황"
         gridId="grid1"
-        grid-height="55vh"
+        grid-height="65vh"
       />
     </section>
     <!-- //공통영역 x -->

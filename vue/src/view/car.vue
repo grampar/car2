@@ -21,7 +21,7 @@
             :paging-yn="Car.paginYn"
             :totalCount="Car.totalCount"
             gridId="grid1"
-            grid-height="57vh"
+            grid-height="58vh"
           />
         </div>
         <div style="width:50%;padding:3px">
@@ -32,7 +32,7 @@
             :paging-yn="CarCnt.paginYn"
             :totalCount="CarCnt.totalCount"
             gridId="grid2"
-            grid-height="57vh"
+            grid-height="58vh"
           />
         </div>
       </div>

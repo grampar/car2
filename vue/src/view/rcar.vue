@@ -21,7 +21,7 @@
             :header-buttons="Raw.headerButtons"
             :paging-yn="Raw.paginYn"
             gridId="grid1"
-            grid-height="55vh"
+            grid-height="50vh"
             gridname="Raw 데이터"
           />
         </div>
@@ -39,7 +39,7 @@
             :paging-yn="Sum.paginYn"
             :totalCount="Sum.totalCount"
             gridId="grid2"
-            grid-height="57vh"
+            grid-height="50vh"
             gridname="집계 데이터"
           />
         </div>

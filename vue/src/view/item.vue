@@ -19,7 +19,7 @@
         :header-buttons="headerButtons"
         :paging-yn="paginYn"
         gridId="grid1"
-        grid-height="55vh"
+        grid-height="52vh"
       />
     </section>
     <!-- //공통영역 x -->

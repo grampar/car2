@@ -5,23 +5,17 @@
         {{ gridname }} | Total
         <strong>{{ totalCount }}</strong>
       </p>
-      <div style="float:right;">
-        <div
-          style="float:left;"
-          class="btns-box"
-          :id="gridId + '_header'"
-        ></div>
-        <div style="float:right;text-align:right;" v-if="excelMeta">
-          <downloadExcel
-            :data="listData"
-            :fields="excelMeta"
-            :worksheet="excelName"
-            :name="excelName"
-          >
-            <span><a class="btn btn-c-primary">Excel Download</a></span>
-          </downloadExcel>
-        </div>
+      <div style="float:left;" v-if="excelMeta">
+        <downloadExcel
+          :data="listData"
+          :fields="excelMeta"
+          :worksheet="excelName"
+          :name="excelName"
+        >
+          <span><button class="btn btn-c-primary">Excel Download</button></span>
+        </downloadExcel>
       </div>
+      <div class="btns-box" :id="gridId + '_header'"></div>
     </div>
     <div>
       <div class="table-list">
@@ -115,11 +109,14 @@ export default {
   methods: {
     createHeaderButton() {
       const div = document.querySelector("#" + this.gridId + "_header");
+      let divForm = document.createElement("div");
+      divForm.setAttribute("class", "form-group");
+
       let me = this;
       this.headerButtons.forEach((ele) => {
         if (ele.type == "date") {
-          let selectdiv = document.createElement("span");
-          selectdiv.setAttribute("class", "item-select is-selected");
+          let selectdiv = document.createElement("div");
+          selectdiv.setAttribute("class", "item-select w150 is-selected");
           let select = document.createElement("select");
           select.setAttribute("id", "damYear");
           select.setAttribute("style", "width:100px");
@@ -138,7 +135,8 @@ export default {
             select.append(option);
           }
           selectdiv.append(select);
-          div.append(selectdiv);
+
+          divForm.append(selectdiv);
 
           selectdiv = document.createElement("span");
           selectdiv.setAttribute("class", "item-select is-selected");
@@ -160,11 +158,14 @@ export default {
             select.append(option);
           }
           selectdiv.append(select);
-          div.append(selectdiv);
+          divForm.append(selectdiv);
         } else {
-          let a = document.createElement("a");
-          a.setAttribute("class", "btn btn-c-primary");
-          a.innerText = ele.text;
+          let btndiv = document.createElement("div");
+          btndiv.setAttribute("class", "btns-box");
+
+          let button = document.createElement("button");
+          button.setAttribute("class", "btn btn-c-secondary");
+          button.innerText = ele.text;
 
           //let input = me.grid.getElementsByTagName("file");
 
@@ -178,7 +179,7 @@ export default {
                 break;
               }
             }
-            a.addEventListener("click", (e) => {
+            button.addEventListener("click", (e) => {
               e.stopPropagation();
               let trs = me.grid.querySelectorAll("tbody tr");
               let param = [];
@@ -206,20 +207,23 @@ export default {
               ele.callback(me, file);
             });
 
-            a.addEventListener("click", (e) => {
+            button.addEventListener("click", (e) => {
               e.stopPropagation();
               input.value = "";
               input.click();
             });
           } else {
-            a.addEventListener("click", (e) => {
+            button.addEventListener("click", (e) => {
               e.stopPropagation();
               ele.callback(me, {});
             });
           }
 
-          div.append(a);
+          btndiv.append(button);
+          divForm.append(btndiv);
         }
+
+        div.append(divForm);
       });
     },
     createHeader() {
@@ -312,25 +316,33 @@ export default {
         }
 
         tr.addEventListener("click", function(e) {
-          console.log(e.target.parentNode);
           if (me.preTr) {
             me.preTr.setAttribute("style", "cursor:pointer;background:white");
           }
-          e.target.parentNode.setAttribute(
-            "style",
-            "cursor:pointer;background:red"
-          );
+          let tr = me.searchTr(e.target.parentNode);
+
+          tr.setAttribute("style", "cursor:pointer;background:red");
           if (clickcallback) {
             clickcallback(me, data);
           }
 
-          me.preTr = e.target.parentNode;
+          me.preTr = tr;
         });
 
         tbody.append(tr);
       });
 
       this.grid.append(tbody);
+    },
+    searchTr(obj) {
+      let tr;
+      if (obj.tagName !== "TR") {
+        this.searchTr(tr.parentNode);
+      } else {
+        tr = obj;
+      }
+
+      return tr;
     },
     createBodyTd(tr, data, meta) {
       let td = document.createElement("td");
@@ -494,3 +506,26 @@ export default {
   },
 };
 </script>
+<style>
+.jb-table {
+  display: table;
+  width: 100%;
+}
+.jb-table-row {
+  display: table-row;
+}
+.jb-table-cell {
+  display: table-cell;
+  padding: 0px 20px;
+  /* height: 150px; */
+}
+.jb-top {
+  vertical-align: top;
+}
+.jb-middle {
+  vertical-align: middle;
+}
+.jb-bottom {
+  vertical-align: bottom;
+}
+</style>
