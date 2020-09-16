@@ -4,17 +4,16 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">자동차 부속연결</h3>
-        <span></span>
+        <h3 class="contents-title">자동차 Item관리</h3>
+        <search
+          :search-list-data="Car.searchListData"
+          :list-data="Car.searchListData"
+          @searchresult="searchResultCar"
+          searchcolumn="CAR_CODE"
+        />
       </div>
       <div style="display:flex;flex-direction: row">
         <div style="width:50%;padding:3px;">
-          <search
-            :search-list-data="Car.searchListData"
-            :list-data="Car.searchListData"
-            @searchresult="searchResultCar"
-            searchcolumn="CAR_CODE"
-          />
           <gridmain
             :list-data="Car.listData"
             :list-meta="Car.listMeta"
@@ -26,12 +25,6 @@
           />
         </div>
         <div style="width:50%;padding:3px">
-          <search
-            :search-list-data="Item.searchListData"
-            :list-data="Item.searchListData"
-            @searchresult="searchResultItem"
-            searchcolumn="ITEM_NO"
-          />
           <gridmain
             :list-data="Item.listData"
             :list-meta="Item.listMeta"
@@ -57,10 +50,10 @@ export default {
     return {
       Car: {
         listMeta: {
-          clickcallback: function (vm, data) {
+          clickcallback: function(vm, data) {
             vm.$options.parent.getItemList(data.CAR_CODE);
           },
-          dblclickCallback: function (vm, data) {
+          dblclickCallback: function(vm, data) {
             console.log(vm, data);
             vm.$options.parent.showLayerPopup(data);
           },
@@ -71,10 +64,10 @@ export default {
         headerButtons: [
           {
             type: "normal",
-            callback: function (vm) {
+            callback: function(vm) {
               vm.$options.parent.search();
             },
-            text: "Refresh",
+            text: "조회",
           },
         ],
         paginYn: "N",
@@ -102,7 +95,7 @@ export default {
         headerButtons: [
           {
             type: "checkbox",
-            callback: function (param, vm) {
+            callback: function(param, vm) {
               console.log(vm, param);
               if (param.length == 0) {
                 alert("아이템을 선택해주세요");
@@ -198,7 +191,21 @@ export default {
     },
     insertCatItem(param) {
       let data = { carCode: this.Car.carCode, list: param };
-      carApi.insertCarItem(data);
+      let carCode = this.Car.carCode;
+      carApi
+        .insertCarItem(data)
+        .then((result) => {
+          console.log("insertCatItem:", result);
+          if (result.data.retCode === "0") {
+            this.getItemList(carCode);
+          } else {
+            console.log(result.data.errMsg);
+          }
+        })
+        .catch((error) => {
+          alert("오류발생 관리자에게 문의");
+          console.error(error);
+        });
     },
   },
 };

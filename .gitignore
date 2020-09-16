@@ -11,7 +11,7 @@ vue/npm-debug.log*
 vue/yarn-debug.log*
 vue/yarn-error.log*
 vue/pnpm-debug.log*
-src/main/webapp/upload
+src/main/webapp/
 
 # Editor directories and files
 vue/.idea

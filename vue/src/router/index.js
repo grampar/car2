@@ -32,6 +32,10 @@ const router = new VueRouter({
       path: "/asmon",
       component: () => import("@/view/asmon.vue"),
     },
+    {
+      path: "/price_sum",
+      component: () => import("@/view/price_sum.vue"),
+    },
   ],
 });
 /* 

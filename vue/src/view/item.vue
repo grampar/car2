@@ -38,7 +38,9 @@
             <h2 class="ui-layer__title">Item 추가</h2>
           </div>
           <div class="ui-layer__body" tabindex="0">
-            <div class="ui-layer__body-inner mCustomScrollbar _mCS_1 mCS_no_scrollbar">
+            <div
+              class="ui-layer__body-inner mCustomScrollbar _mCS_1 mCS_no_scrollbar"
+            >
               <div
                 id="mCSB_1"
                 class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside"
@@ -72,7 +74,11 @@
                           </th>
                           <td>
                             <div class="item-input">
-                              <input type="text" id="itemNo" v-model="selectedData.itemNo" />
+                              <input
+                                type="text"
+                                id="itemNo"
+                                v-model="selectedData.itemNo"
+                              />
                             </div>
                           </td>
                           <th>
@@ -81,7 +87,10 @@
                           </th>
                           <td>
                             <div class="item-input">
-                              <input type="text" v-model="selectedData.itemNm" />
+                              <input
+                                type="text"
+                                v-model="selectedData.itemNm"
+                              />
                             </div>
                           </td>
                         </tr>
@@ -92,7 +101,10 @@
                           </th>
                           <td colspan="3">
                             <div class="item-input">
-                              <input type="text" v-model="selectedData.itemKind" />
+                              <input
+                                type="text"
+                                v-model="selectedData.itemKind"
+                              />
                             </div>
                           </td>
                         </tr>
@@ -103,7 +115,11 @@
                           </th>
                           <td>
                             <div class="item-input">
-                              <input type="text" id="itemNo" v-model="selectedData.oemPrice" />
+                              <input
+                                type="text"
+                                id="itemNo"
+                                v-model="selectedData.oemPrice"
+                              />
                             </div>
                           </td>
                           <th>
@@ -112,7 +128,10 @@
                           </th>
                           <td>
                             <div class="item-input">
-                              <input type="text" v-model="selectedData.asPrice" />
+                              <input
+                                type="text"
+                                v-model="selectedData.asPrice"
+                              />
                             </div>
                           </td>
                         </tr>
@@ -131,7 +150,10 @@
                       class="mCSB_dragger"
                       style="position: absolute; min-height: 30px; top: 0px; height: 0px;"
                     >
-                      <div class="mCSB_dragger_bar" style="line-height: 30px;"></div>
+                      <div
+                        class="mCSB_dragger_bar"
+                        style="line-height: 30px;"
+                      ></div>
                     </div>
                     <div class="mCSB_draggerRail"></div>
                   </div>
@@ -146,8 +168,12 @@
                 class="btn btn-c-secondary"
                 data-role="layerClose"
                 @click="showLayerPopup"
-              >취소</button>
-              <button type="button" class="btn btn-c-primary" @click="addData">확인</button>
+              >
+                취소
+              </button>
+              <button type="button" class="btn btn-c-primary" @click="addData">
+                확인
+              </button>
             </div>
           </div>
           <button
@@ -173,7 +199,7 @@ export default {
   data() {
     return {
       listMeta: {
-        dblclickCallback: function (vm, data) {
+        dblclickCallback: function(vm, data) {
           vm.$options.parent.showLayerPopup(data);
         },
         meta: [
@@ -195,14 +221,14 @@ export default {
       headerButtons: [
         {
           type: "normal",
-          callback: function (vm) {
+          callback: function(vm) {
             vm.$options.parent.getSearch();
           },
           text: "Refresh",
         },
         {
           type: "normal",
-          callback: function (vm, param) {
+          callback: function(vm, param) {
             console.log(param);
             vm.$options.parent.showLayerPopup();
           },
@@ -210,7 +236,7 @@ export default {
         },
         {
           type: "Import",
-          callback: function (vm, file) {
+          callback: function(vm, file) {
             vm.$options.parent.upload(file);
           },
           text: "Excel upload",
@@ -237,7 +263,7 @@ export default {
   methods: {
     searchResult(searchData) {
       if (searchData) {
-        this.listData.splice(0, this.listData.length);
+        //this.listData.splice(0, this.listData.length);
         this.listData = searchData;
       } else {
         this.search();
@@ -336,6 +362,7 @@ export default {
           me.search();
         })
         .catch((error) => {
+          alert("오류발생");
           console.error(error);
         });
     },
@@ -359,6 +386,7 @@ export default {
         .itemFileupload(frm)
         .then((result) => {
           console.log(result);
+          alert("저장이 완료");
           me.search();
         })
         .catch((error) => {

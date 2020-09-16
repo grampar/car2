@@ -35,6 +35,7 @@ export default {
   insertCarItem: (payload) => {
     return HTTP.post(`${TargetURL}/insertCarItem`, payload);
   },
+
   getItemMonRcarList: (payload) => {
     return HTTP.post(`${TargetURL}/getItemMonRcarList`, payload);
   },
@@ -45,6 +46,13 @@ export default {
       },
     });
   },
+  getItemRcarSumList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemRcarSumList`, payload);
+  },
+  insertItemRcarSum: (payload) => {
+    return HTTP.post(`${TargetURL}/insertItemRcarSum`, payload);
+  },
+
   getItemMonCkdList: (payload) => {
     return HTTP.post(`${TargetURL}/getItemMonCkdList`, payload);
   },
@@ -55,6 +63,13 @@ export default {
       },
     });
   },
+  getItemCkdSumList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemCkdSumList`, payload);
+  },
+  insertItemCkdSum: (payload) => {
+    return HTTP.post(`${TargetURL}/insertItemCkdSum`, payload);
+  },
+
   getItemMonAsList: (payload) => {
     return HTTP.post(`${TargetURL}/getItemMonAsList`, payload);
   },
@@ -64,5 +79,14 @@ export default {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  getItemAsSumList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemAsSumList`, payload);
+  },
+  insertItemAsSum: (payload) => {
+    return HTTP.post(`${TargetURL}/insertItemAsSum`, payload);
+  },
+  getPriceSum: (payload) => {
+    return HTTP.post(`${TargetURL}/getPriceSum`, payload);
   },
 };

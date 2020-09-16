@@ -214,4 +214,70 @@ public class CarController {
 		
 		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
 	}
+	
+	
+	@RequestMapping(value="/getItemRcarSumList")	
+	public ResponseEntity<RestResponse>   getItemRcarSumList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getItemRcarSumList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/insertItemRcarSum")	
+	public ResponseEntity<RestResponse>   insertItemRcarSum(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		int ret=carService.insertItemRcarSum(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getItemCkdSumList")	
+	public ResponseEntity<RestResponse>   getItemCkdSumList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getItemCkdSumList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/insertItemCkdSum")	
+	public ResponseEntity<RestResponse>   insertItemCkdSum(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		int ret=carService.insertItemCkdSum(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getItemAsSumList")	
+	public ResponseEntity<RestResponse>   getItemAsSumList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getItemAsSumList(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/insertItemAsSum")	
+	public ResponseEntity<RestResponse>   insertItemAsSum(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		int ret=carService.insertItemAsSum(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(ret), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getPriceSum")	
+	public ResponseEntity<RestResponse>   getPriceSum(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		
+		RestResponse restResponse = new RestResponse();		
+		List<CommMap> retMap = carService.getPriceSum(reqParam);
+		
+		return new ResponseEntity<RestResponse >(restResponse .setSuccess(retMap), HttpStatus.OK);
+	}
+	
+	
 }

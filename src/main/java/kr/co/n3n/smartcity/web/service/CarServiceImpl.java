@@ -259,5 +259,79 @@ public class CarServiceImpl implements CarService {
 		
 		return 1;
 	}
+
+
+
+	@Override
+	public List<CommMap> getItemRcarSumList(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getItemRcarSumList", reqParam);
+					        
+		return list;
+	}
+
+
+	@Transactional
+	@Override
+	public int insertItemRcarSum(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		
+		commonDao.delete("car.deleteItemRcarSum", reqParam);
+		commonDao.delete("car.insertItemRcarSum", reqParam);		
+		
+		return 0;
+	}
+	
+	@Override
+	public List<CommMap> getItemCkdSumList(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getItemCkdSumList", reqParam);
+					        
+		return list;
+	}
+
+
+	@Transactional
+	@Override
+	public int insertItemCkdSum(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		
+		commonDao.delete("car.deleteItemCkdSum", reqParam);
+		commonDao.delete("car.insertItemCkdSum", reqParam);		
+		
+		return 0;
+	}
+	
+	@Override
+	public List<CommMap> getItemAsSumList(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getItemAsSumList", reqParam);
+					        
+		return list;
+	}
+
+
+	@Transactional
+	@Override
+	public int insertItemAsSum(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		
+		commonDao.delete("car.deleteItemAsSum", reqParam);
+		commonDao.delete("car.insertItemAsSum", reqParam);		
+		
+		return 0;
+	}
+	
+	@Override
+	public List<CommMap> getPriceSum(CommMap reqParam) throws Exception {
+		// TODO Auto-generated method stub
+		List<CommMap> list=null;			
+		list=commonDao.selectList("car.getPriceSum", reqParam);
+					        
+		return list;
+	}
 	
 }

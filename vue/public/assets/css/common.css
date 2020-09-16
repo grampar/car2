@@ -994,22 +994,22 @@ body {
   transition: 0.2s;
 }
 .btn-c-primary {
-  background-color: #4373b9;
+  background-color: #4359b9;
 }
 .btn-c-primary:hover {
-  background-color: #234980;
+  background-color: #312380;
 }
 .btn-c-secondary {
-  background-color: #78869b;
+  background-color: #7b9b78;
 }
 .btn-c-secondary:hover {
-  background-color: #4b596e;
+  background-color: #4b6e66;
 }
 .btn-c-tertiary {
-  background-color: #184067;
+  background-color: #7ce82a;
 }
 .btn-c-tertiary:hover {
-  background-color: #0d2842;
+  background-color: #4dd021;
 }
 .btn-c-white {
   padding-left: 21px;

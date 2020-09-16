@@ -30,4 +30,15 @@ public interface CarService {
 	public int insertItemMonAs(List<CommMap> reqParam, String mon) throws Exception;
 	
 	
+	public List<CommMap> getItemRcarSumList(CommMap reqParam) throws Exception;
+	public int insertItemRcarSum(CommMap reqParam) throws Exception;
+	
+	public List<CommMap> getItemCkdSumList(CommMap reqParam) throws Exception;
+	public int insertItemCkdSum(CommMap reqParam) throws Exception;
+	
+	public List<CommMap> getItemAsSumList(CommMap reqParam) throws Exception;
+	public int insertItemAsSum(CommMap reqParam) throws Exception;
+	
+	public List<CommMap> getPriceSum(CommMap reqParam) throws Exception;
+	
 }

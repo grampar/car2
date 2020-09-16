@@ -2,26 +2,53 @@
   <div>
     <div class="table-list-info">
       <p class="table-info-total">
-        Total
+        {{ gridname }} | Total
         <strong>{{ totalCount }}</strong>
       </p>
-      <div class="btns-box" :id="gridId + '_header'"></div>
+      <div style="float:right;">
+        <div
+          style="float:left;"
+          class="btns-box"
+          :id="gridId + '_header'"
+        ></div>
+        <div style="float:right;text-align:right;" v-if="excelMeta">
+          <downloadExcel
+            :data="listData"
+            :fields="excelMeta"
+            :worksheet="excelName"
+            :name="excelName"
+          >
+            <span><a class="btn btn-c-primary">Excel Download</a></span>
+          </downloadExcel>
+        </div>
+      </div>
     </div>
     <div>
       <div class="table-list">
         <table :id="gridId + '_thader'"></table>
       </div>
     </div>
-    <div class="table-list-box" style="overflow:auto;" :style="{ height: gridHeight }">
+    <div
+      class="table-list-box"
+      style="overflow:auto;"
+      :style="{ height: gridHeight }"
+    >
       <div>
         <div class="table-list" style="height:100%;">
           <table :id="gridId"></table>
         </div>
       </div>
 
-      <div class="table-pagenation" :id="gridId + '_paging'" style="display:none">
+      <div
+        class="table-pagenation"
+        :id="gridId + '_paging'"
+        style="display:none"
+      >
         <div class="pagination-box">
-          <button type="button" class="pagination-btn pagination-first"></button>
+          <button
+            type="button"
+            class="pagination-btn pagination-first"
+          ></button>
           <button type="button" class="pagination-btn pagination-prev"></button>
           <div class="pagination-pages"></div>
           <button type="button" class="pagination-btn pagination-next"></button>
@@ -40,6 +67,8 @@ export default {
   props: {
     listData: Array,
     listMeta: Object,
+    excelMeta: Object,
+    excelName: String,
     curPage: Number,
     totalCount: Number,
     recordCount: Number,
@@ -48,8 +77,9 @@ export default {
     pagingYn: String,
     gridId: String,
     gridHeight: String,
+    gridname: String,
   },
-  data: function () {
+  data: function() {
     return {
       totalPage: 0,
       totalGroup: 0,
@@ -57,10 +87,11 @@ export default {
       grid: null,
       pagenavi: null,
       selectedData: [],
+      preTr: null,
     };
   },
   watch: {
-    listData: function () {
+    listData: function() {
       this.createBody();
       if (this.pagingYn === "Y") {
         this.createPageNavi();
@@ -87,8 +118,11 @@ export default {
       let me = this;
       this.headerButtons.forEach((ele) => {
         if (ele.type == "date") {
+          let selectdiv = document.createElement("span");
+          selectdiv.setAttribute("class", "item-select is-selected");
           let select = document.createElement("select");
           select.setAttribute("id", "damYear");
+          select.setAttribute("style", "width:100px");
           const today = new Date();
 
           let startyear = 2020;
@@ -103,10 +137,14 @@ export default {
             }
             select.append(option);
           }
-          div.append(select);
+          selectdiv.append(select);
+          div.append(selectdiv);
 
+          selectdiv = document.createElement("span");
+          selectdiv.setAttribute("class", "item-select is-selected");
           select = document.createElement("select");
           select.setAttribute("id", "damMon");
+          select.setAttribute("style", "width:100px");
 
           let month = today.getMonth() + 1;
           let tmpi;
@@ -121,7 +159,8 @@ export default {
             }
             select.append(option);
           }
-          div.append(select);
+          selectdiv.append(select);
+          div.append(selectdiv);
         } else {
           let a = document.createElement("a");
           a.setAttribute("class", "btn btn-c-primary");
@@ -219,7 +258,7 @@ export default {
         let checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("id", "totalCheck");
-        checkbox.addEventListener("click", function (e) {
+        checkbox.addEventListener("click", function(e) {
           e.stopPropagation();
 
           let checkboxs = document.querySelectorAll(
@@ -267,16 +306,26 @@ export default {
         });
 
         if (dblclickCallback) {
-          tr.addEventListener("dblclick", function () {
+          tr.addEventListener("dblclick", function() {
             dblclickCallback(me, data);
           });
         }
 
-        if (clickcallback) {
-          tr.addEventListener("click", function () {
+        tr.addEventListener("click", function(e) {
+          console.log(e.target.parentNode);
+          if (me.preTr) {
+            me.preTr.setAttribute("style", "cursor:pointer;background:white");
+          }
+          e.target.parentNode.setAttribute(
+            "style",
+            "cursor:pointer;background:red"
+          );
+          if (clickcallback) {
             clickcallback(me, data);
-          });
-        }
+          }
+
+          me.preTr = e.target.parentNode;
+        });
 
         tbody.append(tr);
       });
@@ -304,14 +353,18 @@ export default {
         button.setAttribute("type", "button");
         button.setAttribute("class", "btn btn-c-secondary btn-size-sm");
         button.innerHTML = "delete";
-        button.addEventListener("click", function (e) {
+        button.addEventListener("click", function(e) {
           let tr = e.target.parentNode.parentNode;
           let param = JSON.parse(tr.dataset.grid);
           meta.callback(me, param);
         });
         td.append(button);
       } else {
-        if (data[meta.col]) td.innerText = data[meta.col];
+        let txt = data[meta.col];
+        if (meta.limit) {
+          txt = txt.substring(0, meta.limit) + "..";
+        }
+        if (data[meta.col]) td.innerText = txt;
       }
 
       tr.append(td);
@@ -369,7 +422,7 @@ export default {
 
       // page num에 등록된 이벤트 및 dom을 제거한다.
       pageDiv.childNodes.forEach((ele, i) => {
-        ele.removeEventListener("click", function (e) {
+        ele.removeEventListener("click", function(e) {
           me.numBtnClick(e, i);
         });
         pageDiv.removeChild(ele);
@@ -381,7 +434,7 @@ export default {
         btn.textContent = i;
         btn.type = "button";
 
-        btn.addEventListener("click", function (e) {
+        btn.addEventListener("click", function(e) {
           me.numBtnClick(e, i);
         });
 

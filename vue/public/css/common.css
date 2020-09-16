@@ -994,22 +994,22 @@ body {
   transition: 0.2s;
 }
 .btn-c-primary {
-  background-color: #4373b9;
+  background-color: #dcd799;
 }
 .btn-c-primary:hover {
-  background-color: #234980;
+  background-color: #c7bc2e;
 }
 .btn-c-secondary {
-  background-color: #78869b;
+  background-color: #9c93cc;
 }
 .btn-c-secondary:hover {
-  background-color: #4b596e;
+  background-color: #4731bd;
 }
 .btn-c-tertiary {
-  background-color: #184067;
+  background-color: #23c737;
 }
 .btn-c-tertiary:hover {
-  background-color: #0d2842;
+  background-color: #71c327;
 }
 .btn-c-white {
   padding-left: 21px;
@@ -1276,7 +1276,7 @@ body {
 }
 .item-select select {
   position: relative;
-  display: block;
+  /* display: block; */
   box-sizing: border-box;
   border-radius: 5px;
   box-shadow: none;

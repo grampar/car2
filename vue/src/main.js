@@ -6,6 +6,7 @@ import search from "./components/search.vue";
 import axios from "axios";
 import App from "./App.vue";
 import vuetify from "@/plugins/vuetify"; // path to vuetify export
+import JsonExcel from "vue-json-excel";
 
 Vue.config.productionTip = false;
 
@@ -14,6 +15,7 @@ Vue.prototype.$http = axios;
 Vue.component("gridmain", gridmain);
 Vue.component("gridtree", gridtree);
 Vue.component("search", search);
+Vue.component("downloadExcel", JsonExcel);
 
 new Vue({
   render: (h) => h(App),

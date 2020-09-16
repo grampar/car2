@@ -11,16 +11,21 @@
             <th>검색</th>
             <td>
               <div class="item-input">
-                <input type="text" v-model="searchData" @keyup.enter="getBtnSearch" />
+                <input
+                  type="text"
+                  v-model="searchData"
+                  @keyup.enter="getBtnSearch"
+                />
               </div>
             </td>
           </tr>
         </tbody>
       </table>
       <div class="table-search-btn">
-        <button type="button" class="btn btn-c-tertiary" @click="getBtnSearch">Search</button>
+        <button type="button" class="btn btn-c-tertiary" @click="getBtnSearch">
+          Search
+        </button>
       </div>
-      
     </form>
   </div>
 </template>
@@ -45,10 +50,10 @@ export default {
     getBtnSearch() {
       let searchTxt = this.searchData.trim();
       if (searchTxt) {
+        this.searchListData = this.listData;
         let newData = this.searchListData.filter((ele) => {
-          var re = new RegExp(searchTxt);          
-            return re.test(ele[this.searchcolumn]);
-          
+          var re = new RegExp(searchTxt);
+          return re.test(ele[this.searchcolumn]);
         });
 
         this.$emit("searchresult", newData);

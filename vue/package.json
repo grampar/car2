@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "sockjs-client": "^1.5.0",
     "vue": "^2.6.11",
+    "vue-json-excel": "^0.2.98",
     "vue-router": "^3.4.3",
     "vuetify": "^2.3.10"
   },

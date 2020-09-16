@@ -6,21 +6,44 @@
       <div class="contents-info">
         <h3 class="contents-title">월별 rcar</h3>
       </div>
-      <search
-        :search-list-data="searchListData"
-        :list-data="searchListData"
-        @searchresult="searchResult"
-        searchcolumn="ITEM_NO"
-      />
-      <gridmain
-        :list-data="listData"
-        :list-meta="listMeta"
-        :total-count="totalCount"
-        :header-buttons="headerButtons"
-        :paging-yn="paginYn"
-        gridId="grid1"
-        grid-height="55vh"
-      />
+      <div style="display:flex;flex-direction: row">
+        <div style="width:50%;padding:3px;">
+          <search
+            :search-list-data="Raw.searchListData"
+            :list-data="Raw.searchListData"
+            @searchresult="searchResultRaw"
+            searchcolumn="ITEM_NO"
+          />
+          <gridmain
+            :list-data="Raw.listData"
+            :list-meta="Raw.listMeta"
+            :total-count="Raw.totalCount"
+            :header-buttons="Raw.headerButtons"
+            :paging-yn="Raw.paginYn"
+            gridId="grid1"
+            grid-height="55vh"
+            gridname="Raw 데이터"
+          />
+        </div>
+        <div style="width:50%;padding:3px">
+          <search
+            :search-list-data="Sum.searchListData"
+            :list-data="Sum.searchListData"
+            @searchresult="searchResultSum"
+            searchcolumn="ITEM_NO"
+          />
+          <gridmain
+            :list-data="Sum.listData"
+            :list-meta="Sum.listMeta"
+            :header-buttons="Sum.headerButtons"
+            :paging-yn="Sum.paginYn"
+            :totalCount="Sum.totalCount"
+            gridId="grid2"
+            grid-height="57vh"
+            gridname="집계 데이터"
+          />
+        </div>
+      </div>
     </section>
     <!-- //공통영역 x -->
   </div>
@@ -33,54 +56,71 @@ export default {
   name: "rcar",
   data() {
     return {
-      listMeta: {
-        dblclickCallback: function (vm, data) {
-          vm.$options.parent.showLayerPopup(data);
+      Raw: {
+        listMeta: {
+          dblclickCallback: function(vm, data) {
+            vm.$options.parent.showLayerPopup(data);
+          },
+          meta: [
+            { col: "ITEM_NO", name: "품번", size: "180px" },
+            { col: "ITEM_NM", name: "품명", size: "300px" },
+            { col: "MON", name: "월", size: "100px" },
+            { col: "CNT", name: "수량" },
+          ],
         },
-        meta: [
+        listData: [],
+        searchListData: [],
+        headerButtons: [
           {
-            col: "input=checkbox",
-            name: "",
-            size: "50px",
-            targetid: "chkgrid",
+            type: "date",
           },
-          { col: "ITEM_NO", name: "품번", size: "300px" },
-          { col: "ITEM_NM", name: "품명", size: "500px" },
-          { col: "MON", name: "월", size: "100px" },
-          { col: "CNT", name: "수량", size: "100px" },
-          { col: "REG_DT", name: "입력일시" },
+          {
+            type: "normal",
+            callback: function(vm) {
+              vm.$options.parent.getSearch();
+            },
+            text: "조회",
+          },
+          {
+            type: "Import",
+            callback: function(vm, file) {
+              vm.$options.parent.upload(file);
+            },
+            text: "Excel 업로드",
+          },
+          {
+            type: "normal",
+            callback: function(vm) {
+              vm.$options.parent.insertSum();
+            },
+            text: "집계",
+          },
         ],
+        totalCount: 0,
+        paginYn: "N",
       },
-      listData: [],
-      searchListData: [],
-      headerButtons: [
-        {
-          type: "normal",
-          callback: function (vm) {
-            vm.$options.parent.getSearch();
+      Sum: {
+        listMeta: {
+          meta: [
+            { col: "ITEM_NO", name: "품번", size: "180px" },
+            { col: "ITEM_NM", name: "품명", size: "300px" },
+            { col: "MON", name: "월", size: "100px" },
+            { col: "SUM_CNT", name: "수량" },
+          ],
+        },
+        listData: [],
+        searchListData: [],
+        headerButtons: [
+          {
+            type: "normal",
+            callback: function(vm) {
+              vm.$options.parent.getSumList();
+            },
+            text: "조회",
           },
-          text: "Refresh",
-        },
-        {
-          type: "date",
-        },
-        {
-          type: "Import",
-          callback: function (vm, file) {
-            vm.$options.parent.upload(file);
-          },
-          text: "Excel upload",
-        },
-      ],
-      totalCount: 0,
-      paginYn: "N",
-      mode: "",
-      selectedData: {
-        itemNo: "",
-        itemNm: "",
-        itemKind: "",
-        oemPrice: 0,
-        asPrice: 0,
+        ],
+        totalCount: 0,
+        paginYn: "N",
       },
     };
   },
@@ -91,23 +131,32 @@ export default {
   },
   updated() {},
   methods: {
-    searchResult(searchData) {
+    searchResultRaw(searchData) {
       if (searchData) {
-        this.listData.splice(0, this.listData.length);
-        this.listData = searchData;
+        //this.Raw.listData.splice(0, this.Raw.listData.length);
+        this.Raw.listData = searchData;
       } else {
         this.search();
       }
     },
+    searchResultSum(searchData) {
+      if (searchData) {
+        //this.Raw.listData.splice(0, this.Raw.listData.length);
+        this.Sum.listData = searchData;
+      } else {
+        this.getSumList();
+      }
+    },
+
     getSearch() {
       this.search();
     },
     async search() {
       //params":{"query":{"PlayerTypeName":"video"}}
 
-      await this.getItemList();
+      await this.getRawList();
     },
-    async getItemList() {
+    async getRawList() {
       let me = this;
       let param = {
         mon: this.getMon(),
@@ -118,12 +167,37 @@ export default {
           console.log("getItemMonRcarList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.totalCount = data.length;
+            me.Raw.totalCount = data.length;
 
-            me.listData.splice(0, me.listData.length);
-            me.searchListData.splice(0, me.searchListData.length);
-            me.listData = data;
-            me.searchListData = data;
+            me.Raw.listData.splice(0, me.Raw.listData.length);
+            me.Raw.searchListData.splice(0, me.Raw.searchListData.length);
+            me.Raw.listData = data;
+            me.Raw.searchListData = data;
+          } else {
+            console.log(result.data.errMsg);
+          }
+        })
+        .catch((error) => {
+          console.error("getItemList:", error);
+        });
+    },
+    async getSumList() {
+      let me = this;
+      let param = {
+        mon: this.getMon(),
+      };
+      carApi
+        .getItemRcarSumList(param)
+        .then((result) => {
+          console.log("getItemRcarSumList:", result);
+          if (result.data.retCode === "0") {
+            let data = result.data.data;
+            me.Sum.totalCount = data.length;
+
+            me.Sum.listData.splice(0, me.Sum.listData.length);
+            me.Sum.searchListData.splice(0, me.Sum.searchListData.length);
+            me.Sum.listData = data;
+            me.Sum.searchListData = data;
           } else {
             console.log(result.data.errMsg);
           }
@@ -147,11 +221,32 @@ export default {
         .itemMonRcarUpload(frm)
         .then((result) => {
           console.log(result);
+          alert("업로드 완료");
           me.search();
         })
         .catch((error) => {
           alert("오류발생 관리자에게 문의");
           console.error(error);
+        });
+    },
+    insertSum() {
+      let me = this;
+      let param = {
+        mon: this.getMon(),
+      };
+      carApi
+        .insertItemRcarSum(param)
+        .then((result) => {
+          console.log("insertItemRcarSum:", result);
+          if (result.data.retCode === "0") {
+            me.getSumList();
+          } else {
+            console.log(result.data.errMsg);
+          }
+        })
+        .catch((error) => {
+          alert("오류발생");
+          console.error("insertItemRcarSum:", error);
         });
     },
   },

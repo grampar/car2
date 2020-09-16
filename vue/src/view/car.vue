@@ -5,34 +5,15 @@
     <section class="contents">
       <div class="contents-info">
         <h3 class="contents-title">자동차</h3>
-        <div class="table-search">
-            <form name="searchForm" onsubmit="return false">
-              <table>
-                <colgroup>
-                  <col width="170px" />
-                  <col />
-                </colgroup>
-                <tbody>
-                  <tr>
-                    <th>검색</th>
-                    <td>
-                      <div class="item-input">
-                        <input type="text" v-model="Car.searchData" @keyup.enter="getBtnSearch" />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="table-search-btn">
-                <button type="button" class="btn btn-c-tertiary" @click="getBtnSearch">Search</button>
-              </div>
-              
-            </form>
-          </div>
+        <search
+          :search-list-data="Car.searchListData"
+          :list-data="Car.searchListData"
+          @searchresult="searchResult"
+          searchcolumn="CAR_CODE"
+        />
       </div>
       <div style="display:flex;flex-direction: row">
         <div style="width:50%;padding:3px;">
-          
           <gridmain
             :list-data="Car.listData"
             :list-meta="Car.listMeta"
@@ -69,10 +50,10 @@ export default {
     return {
       Car: {
         listMeta: {
-          clickcallback: function (vm, data) {
+          clickcallback: function(vm, data) {
             vm.$options.parent.getCarMonCntList(data.CAR_CODE);
           },
-          dblclickCallback: function (vm, data) {
+          dblclickCallback: function(vm, data) {
             vm.$options.parent.showLayerPopup(data);
           },
           meta: [{ col: "CAR_CODE", name: "Code", size: "150px" }],
@@ -81,43 +62,42 @@ export default {
         searchListData: [],
         headerButtons: [
           {
-            type: "normal",
-            callback: function (vm) {
-              vm.$options.parent.search();
-            },
-            text: "Refresh",
+            type: "date",
           },
           {
-            type:"date"
+            type: "normal",
+            callback: function(vm) {
+              vm.$options.parent.search();
+            },
+            text: "조회",
           },
           {
             type: "Import",
-            callback: function (vm, file) {              
-              vm.$options.parent.upload(file);   
+            callback: function(vm, file) {
+              vm.$options.parent.upload(file);
             },
-            text: "Excel upload",
+            text: "Excel 업로드",
           },
-          
         ],
         paginYn: "N",
         searchData: "",
-        totalCount:0,
+        totalCount: 0,
       },
       CarCnt: {
         listMeta: {
-          callback: function (vm, data) {
+          callback: function(vm, data) {
             vm.$options.parent.showLayerPopup(data);
           },
           meta: [
             { col: "MON", name: "월" },
-            { col: "CNT", name: "수량" },            
+            { col: "CNT", name: "수량" },
           ],
         },
         listData: [],
-        searchListData: [],                
+        searchListData: [],
         headerButtons: [],
         paginYn: "N",
-        totalCount:0,
+        totalCount: 0,
       },
       mode: "",
     };
@@ -129,17 +109,10 @@ export default {
   mounted() {},
   updated() {},
   methods: {
-
-    getBtnSearch() {
-      let searchTxt = this.Car.searchData.trim();
-      if (searchTxt) {
-        let newData = this.Car.searchListData.filter((ele) => {
-          var re = new RegExp(searchTxt);
-          return re.test(ele.CAR_CODE);
-        });
-
-        this.Car.listData.splice(0, this.Car.listData.length);
-        this.Car.listData = newData;
+    searchResult(searchData) {
+      if (searchData) {
+        //this.Car.listData.splice(0, this.Car.listData.length);
+        this.Car.listData = searchData;
       } else {
         this.search();
       }
@@ -154,11 +127,10 @@ export default {
       let param = {};
       carApi
         .getCarList(param)
-        .then((result) => {          
-          
+        .then((result) => {
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.Car.totalCount=data.length;
+            me.Car.totalCount = data.length;
             me.Car.listData.splice(0, me.Car.listData.length);
             me.Car.searchListData.splice(0, me.Car.searchListData.length);
             me.Car.listData = data;
@@ -168,23 +140,23 @@ export default {
           }
         })
         .catch((error) => {
-          alert("오류발생 관리자에게 문의")
+          alert("오류발생 관리자에게 문의");
           console.error(error);
         });
     },
     getCarMonCntList(carCode) {
       let me = this;
       let param = {
-        mon:this.getMon(),
-        carCode:carCode
+        mon: this.getMon(),
+        carCode: carCode,
       };
       carApi
         .getCarMonCntList(param)
-        .then((result) => {         
-          console.log("getCarMonCntList:", result) 
+        .then((result) => {
+          console.log("getCarMonCntList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
-            me.CarCnt.totalCount=data.length;
+            me.CarCnt.totalCount = data.length;
             me.CarCnt.listData.splice(0, me.CarCnt.listData.length);
             me.CarCnt.searchListData.splice(0, me.CarCnt.searchListData.length);
             me.CarCnt.listData = data;
@@ -194,32 +166,34 @@ export default {
           }
         })
         .catch((error) => {
-          alert("오류발생 관리자에게 문의")
+          alert("오류발생 관리자에게 문의");
           console.error(error);
         });
     },
-    getMon(){
-      let year=document.querySelector("#damYear").value;
-      let mon=document.querySelector("#damMon").value
-      return year+mon;
+    getMon() {
+      let year = document.querySelector("#damYear").value;
+      let mon = document.querySelector("#damMon").value;
+      return year + mon;
     },
-    upload(file){
+    upload(file) {
       var frm = new FormData();
-      frm.append('file', file);
-      frm.append('mon', this.getMon());
+      frm.append("file", file);
+      frm.append("mon", this.getMon());
 
-      let me=this;
+      let me = this;
 
-      carApi.carFileupload(frm)
-      .then((result)=>{
-        console.log(result);
-        me.search();        
-      })
-      .catch((error)=>{
-        alert("오류발생 관리자에게 문의")
-        console.error(error);        
-      })
-    }
+      carApi
+        .carFileupload(frm)
+        .then((result) => {
+          console.log(result);
+          alert("업로드 완료");
+          me.search();
+        })
+        .catch((error) => {
+          alert("오류발생 관리자에게 문의");
+          console.error(error);
+        });
+    },
   },
 };
 </script>
