@@ -316,6 +316,7 @@ export default {
         }
 
         tr.addEventListener("click", function(e) {
+          e.stopPropagation();
           if (me.preTr) {
             me.preTr.setAttribute("style", "cursor:pointer;background:white");
           }
