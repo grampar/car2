@@ -3,4 +3,90 @@ spring:
   profiles:
     #active: production  
     active: development
-     
+  jmx: 
+    enabled: false
+  http: 
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  servlet: 
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+      
+      
+server:
+  port: 9020
+  servlet:
+    context-path: /
+    session: 
+      timeout: 3600
+  tomcat:
+    max-threads: 1024
+    uri-encoding: UTF-8
+         
+---
+
+spring:
+  profiles: development      
+  servlet: 
+    multipart:      
+      location: /root/temp
+  devtools: 
+    livereload: 
+      enabled: true
+  datasource: 
+    hikari: 
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://192.168.0.14:3306/car?serverTimezone=UTC
+      #jdbc-url: jdbc:mysql://localhost:3306/car?serverTimezone=UTC
+      username: root
+      password: dkswjs0!
+      auto-commit: false
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 50
+      transaction-isolation: TRANSACTION_READ_UNCOMMITTED
+      pool-name: pool-jiniworld               
+      mapper-locations: classpath*:mybatis/mapper/mariadb/**/*.xml 
+      type-handlers-package: kr.co.n3n.smartcity.common.typehandler
+      executor-type: batch
+      
+   
+
+carfile:
+  #targetpath: C:\workspace\project\java\car\src\main\webapp\upload\
+  targetpath: /root/tomcat/webapps/car/upload/
+
+  
+---
+
+spring:
+  profiles: production
+  servlet: 
+    multipart:      
+      location: /root/temp
+  datasource: 
+    hikari: 
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      #jdbc-url: jdbc:mysql://192.168.0.14:3306/car?serverTimezone=UTC
+      jdbc-url: jdbc:mysql://localhost:3306/car?serverTimezone=UTC
+      username: root
+      password: dkswjs0!
+      auto-commit: false
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 50
+      transaction-isolation: TRANSACTION_READ_UNCOMMITTED
+      pool-name: pool-jiniworld               
+      mapper-locations: classpath*:mybatis/mapper/mariadb/**/*.xml 
+      type-handlers-package: kr.co.n3n.smartcity.common.typehandler
+      executor-type: batch
+   
+
+
+carfile:
+  targetpath: C:\workspace\project\java\car\src\main\webapp\upload\
+  #targetpath: /root/tomcat/webapps/car/upload/

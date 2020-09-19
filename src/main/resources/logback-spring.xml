@@ -2,7 +2,7 @@
 <configuration>
 
 	<!-- 변수 지정 -->
-    <property name="LOG_DIR" value="./logs" />
+    <property name="LOG_DIR" value="/workspace/apache-tomcat-8.5.58/logs" />
     <property name="LOG_PATH_NAME" value="${LOG_DIR}/scs.log" />
     
     <!-- FILE Appender -->
@@ -49,7 +49,7 @@
       	</root>
     </springProfile>
     <springProfile name="production">
-    	<root level="INFO">
+    	<root level="DEBUG">
         	<appender-ref ref="STDOUT" />
       		<!-- <appender-ref ref="FILE" /> -->
       	</root>

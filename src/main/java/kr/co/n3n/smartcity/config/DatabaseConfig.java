@@ -30,16 +30,27 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DatabaseConfig {
 	
 	@Autowired
-    private mybatisSettings mybatisSettings;
+    private mybatisSettings setting;
 	
 	
 	
-	@Bean(name="motDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.mot-ds")
+	@Bean(name="dataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
     @Primary
     public DataSource dataSource() {
 		
-		DataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();		
+//    	HikariConfig config = new HikariConfig();
+//    	config.setJdbcUrl(setting.getJdbcUrl());
+//    	config.setDriverClassName(setting.getDriverClassName());
+//    	config.setUsername(setting.getUsername());
+//    	config.setPassword(setting.getPassword());
+//    	
+//    	HikariDataSource ds=new HikariDataSource( config );
+//    	return ds;
+    	
+    	
+    			
+		DataSource dataSource = DataSourceBuilder.create().build();		
 		return dataSource;
 		
         //return DataSourceBuilder.create().build();
@@ -55,11 +66,12 @@ public class DatabaseConfig {
 	
 	@Bean(name="motSqlSessionFactory")
     @Primary
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("motDataSource") DataSource dataSource, ApplicationContext applicationContext) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource, ApplicationContext applicationContext) throws Exception {
+    //public SqlSessionFactory sqlSessionFactory(@Qualifier("motDataSource") DataSource dataSource, ApplicationContext applicationContext) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(mybatisSettings.getMapperLocations()));
-        sqlSessionFactoryBean.setTypeHandlersPackage(mybatisSettings.getTypeHandlersPackage());
+        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources(setting.getMapperLocations()));
+        sqlSessionFactoryBean.setTypeHandlersPackage(setting.getTypeHandlersPackage());
                 
         return sqlSessionFactoryBean.getObject();
     }

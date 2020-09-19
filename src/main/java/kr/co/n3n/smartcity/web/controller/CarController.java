@@ -43,6 +43,7 @@ public class CarController {
 	
 	@RequestMapping(value="/getCarList")	
 	public ResponseEntity<RestResponse>   getCarList(@RequestBody(required=true) CommMap reqParam) throws Exception{
+		LOG.info("###getCarList",reqParam);
 		
 		RestResponse restResponse = new RestResponse();		
 		List<CommMap> retMap = carService.getCarList(reqParam);

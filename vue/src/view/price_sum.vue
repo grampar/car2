@@ -13,7 +13,7 @@
         :header-buttons="headerButtons"
         :paging-yn="paginYn"
         :excel-meta="excelMeta"
-        excel-name="매출현황"
+        excel-name="매출현황.xls"
         gridId="grid1"
         grid-height="65vh"
       />
