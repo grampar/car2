@@ -4,7 +4,7 @@
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">월별 as</h3>
+        <h3 class="contents-title">월별 mobis</h3>
       </div>
       <div style="display:flex;flex-direction: row">
         <div style="width:50%;padding:3px;">
@@ -53,7 +53,7 @@
 <script>
 import carApi from "@/api/car";
 export default {
-  name: "asmon",
+  name: "mobis",
   data() {
     return {
       Raw: {
@@ -133,7 +133,7 @@ export default {
         //this.Raw.listData.splice(0, this.Raw.listData.length);
         this.Raw.listData = searchData;
       } else {
-        this.getRawList();
+        this.search();
       }
     },
     searchResultSum(searchData) {
@@ -158,9 +158,9 @@ export default {
         mon: this.getMon(),
       };
       carApi
-        .getItemMonAsList(param)
+        .getItemMonMobisList(param)
         .then((result) => {
-          console.log("getItemMonCkdList:", result);
+          console.log("getItemMonMobisList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
             me.Raw.totalCount = data.length;
@@ -174,7 +174,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("getItemList:", error);
+          console.error("getItemMonMobisList:", error);
         });
     },
     async getSumList() {
@@ -183,9 +183,9 @@ export default {
         mon: this.getMon(),
       };
       carApi
-        .getItemAsSumList(param)
+        .getItemAMobisSumList(param)
         .then((result) => {
-          console.log("getItemAsSumList:", result);
+          console.log("getItemAMobisSumList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
             me.Sum.totalCount = data.length;
@@ -199,7 +199,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("getItemList:", error);
+          console.error("getItemAMobisSumList:", error);
         });
     },
     getMon() {
@@ -214,9 +214,9 @@ export default {
       let me = this;
 
       carApi
-        .itemMonAsUpload(frm)
+        .itemMonMobisUpload(frm)
         .then((result) => {
-          console.log("itemMonAsUpload", result);
+          console.log(result);
           alert("업로드 완료");
           me.search();
         })
@@ -231,9 +231,9 @@ export default {
         mon: this.getMon(),
       };
       carApi
-        .insertItemAsSum(param)
+        .insertItemMobisSum(param)
         .then((result) => {
-          console.log("insertItemAsSum:", result);
+          console.log("insertItemMobisSum:", result);
           if (result.data.retCode === "0") {
             me.getSumList();
           } else {
@@ -242,7 +242,7 @@ export default {
         })
         .catch((error) => {
           alert("오류발생");
-          console.error("insertItemAsSum:", error);
+          console.error("insertItemMobisSum:", error);
         });
     },
   },

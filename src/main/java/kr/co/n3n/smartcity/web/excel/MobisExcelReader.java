@@ -7,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 
 import kr.co.n3n.smartcity.common.model.CommMap;
 
-public class CarExcelReader extends AbstractExcelReader {
+public class MobisExcelReader extends AbstractExcelReader {
 
 	@Override
 	protected CommMap readCell(XSSFRow row) throws Exception{
@@ -24,17 +24,16 @@ public class CarExcelReader extends AbstractExcelReader {
             
             //셀이 빈값일경우를 위한 널체크
             value=this.getCellValue(cell);
-            if(columnindex==0) {
-            	map.put("gubun", value);
-            }else if(columnindex==1) {
-            	map.put("carCode", value);
-            }else {
+            if(columnindex==2) {
+            	value=value.replace("-", "");
+            	map.put("itemNo", value);
+            }else if(columnindex==5) {
             	if(value.equals("")) {
             		map.put("cnt", 0);
             	}else {
             		map.put("cnt", value);
             	}
-            }            
+            }      
         }
         
 		// TODO Auto-generated method stub

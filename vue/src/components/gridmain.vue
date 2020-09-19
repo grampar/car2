@@ -338,7 +338,7 @@ export default {
     searchTr(obj) {
       let tr;
       if (obj.tagName !== "TR") {
-        this.searchTr(tr.parentNode);
+        this.searchTr(obj.parentNode);
       } else {
         tr = obj;
       }
@@ -356,10 +356,7 @@ export default {
           if (data[meta.name.toUpperCase()] === "CHK") {
             checkbox.setAttribute("checked", true);
           }
-        }
-        checkbox.addEventListener("click", (e) => {
-          console.log(e);
-        });
+        }        
         td.append(checkbox);
       } else if (meta.col == "input=button") {
         let button = document.createElement("button");
@@ -374,9 +371,12 @@ export default {
         td.append(button);
       } else {
         let txt = data[meta.col];
-        if (meta.limit) {
-          txt = txt.substring(0, meta.limit) + "..";
+        if(txt){
+          if (meta.limit) {
+            txt = txt.substring(0, meta.limit) + "..";
+          }
         }
+        
         if (data[meta.col]) td.innerText = txt;
       }
 

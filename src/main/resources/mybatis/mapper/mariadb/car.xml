@@ -4,8 +4,9 @@
 	
 	<select id="getCarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
 		SELECT 
-			CAR_CODE,
-			DATE_FORMAT(REG_DT,'%Y-%m-%d %T') AS REG_DT
+			CAR_CODE
+			,CAR_NM
+			,DATE_FORMAT(REG_DT,'%Y-%m-%d %T') AS REG_DT
 		FROM CAR
 		WHERE 1 = 1
 		<if test="keyword != null and keyword != ''">
@@ -14,19 +15,29 @@
 		<if test="carCode != null and carCode != ''">
 			AND CAR_CODE = #{carCode}
 		</if>		
+		ORDER BY REG_DT DESC
     </select>
         
     <insert id="insertCar">
     	INSERT INTO CAR(
-    		CAR_CODE    		
+    		CAR_CODE
+    		,CAR_NM    		
     		,REG_DT    		
     		,UPDATE_DT
     	)VALUES(
     		#{carCode}    		
+    		,#{carNm}
     		,NOW()    		
     		,NOW()
     	)
     </insert>
+    
+    <update id="updateCar">
+    	UPDATE CAR SET    		
+    		CAR_NM=#{carNm}    		
+    		,UPDATE_DT=NOW()
+    	WHERE CAR_CODE=#{carCode}
+    </update>
     
     <insert id="deleteCar">
     	delete from CAR
@@ -35,14 +46,13 @@
     
     
     
-    
-    
     <select id="getCarMonCnt" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
-		SELECT B.MON, B.CNT FROM CAR A
-		INNER JOIN CAR_MON_CNT  B ON A.CAR_CODE =B.CAR_CODE 
-		WHERE B.MON =#{mon}
+		SELECT A.CAR_CODE, B.CAR_NM, A.MON, A.CNT 
+		FROM CAR_MON_CNT A
+		LEFT OUTER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+		WHERE A.MON =#{mon}
 		<if test="carCode != null and carCode != ''">
-			AND B.CAR_CODE = #{carCode}
+			AND A.CAR_CODE = #{carCode}
 		</if>	
 			
     </select>
@@ -63,21 +73,65 @@
     	)
     </insert>
     
-    <insert id="updateCarMonCnt">
+    <update id="updateCarMonCnt">
     	UPDATE CAR_MON_CNT SET    		
-    		CNT=CNT+#{cnt}
+    		CNT=CNT+#{cnt} 
     	WHERE CAR_CODE=#{carCode}
     	AND MON=#{mon}
-    </insert>
+    </update>
     
-    <insert id="deleteCarMonCnt">
+    <delete id="deleteCarMonCnt">
     	delete from CAR_MON_CNT
-    	where MON=#{mon}
-    	<if test="carCode != null and carCode != ''">
-			AND CAR_CODE=#{carCode}
+    	where MON=#{mon}    	
+    </delete>
+    
+    
+    <select id="getCarMonSum" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
+		
+		SELECT 
+			A.ITEM_NO, 
+			B.ITEM_NM, 
+			A.MON, 
+			A.SUM_CNT, 
+			C.CAR_NM		
+		FROM CAR_MON_SUM A
+		LEFT OUTER JOIN item B ON A.item_no =B.item_no
+		INNER JOIN  
+		(
+			SELECT 
+				A.ITEM_NO 
+				,GROUP_CONCAT(B.CAR_NM SEPARATOR '|') AS CAR_NM
+			FROM CAR_ITEM A
+			INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+			GROUP BY ITEM_NO
+		) C ON A.ITEM_NO=C.ITEM_NO
+		WHERE A.MON =#{mon}
+		<if test="carCode != null and carCode != ''">
+			AND A.CAR_CODE = #{carCode}
 		</if>	
+			
+    </select>
+    
+    <insert id="insertCarMonSum">
+    	INSERT INTO CAR_MON_SUM(
+    		MON
+    		,ITEM_NO
+    		,SUM_CNT		
+    		,REG_DT 
+    	)
+    	SELECT 
+			A.MON ,B.ITEM_NO , SUM(CNT), NOW()
+		FROM CAR_MON_CNT A
+		INNER JOIN CAR_ITEM B ON A.CAR_CODE =B.CAR_CODE 
+		WHERE A.MON=#{mon}
+		GROUP BY A.MON ,B.ITEM_NO 
     </insert>
     
+    
+    <delete id="deleteCarMonSum">
+    	DELETE from CAR_MON_SUM
+    	WHERE MON=#{mon}    	
+    </delete>
     
     <select id="getItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		SELECT 
@@ -126,28 +180,24 @@
     
     <select id="getCarItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		SELECT
-			B.ITEM_NO , 
-			B.ITEM_NM , 
-			B.OEM_PRICE,
-			B.AS_PRICE,
+			B.CAR_CODE , 
+			B.CAR_NM,
 			'CHK' CHECKED
 		FROM CAR_ITEM A
-		INNER JOIN ITEM B ON A.ITEM_NO =B.ITEM_NO 
-		WHERE A.CAR_CODE =#{carCode}
+		INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+		WHERE A.ITEM_NO =#{itemNo}
 		UNION ALL
 		SELECT 
-			B.ITEM_NO , 
-			B.ITEM_NM ,
-			B.OEM_PRICE , 
-			B.AS_PRICE,
+			B.CAR_CODE , 
+			B.CAR_NM,
 			'' CHECKED
-		FROM ITEM B
-		WHERE ITEM_NO NOT IN (
+		FROM CAR B
+		WHERE CAR_CODE NOT IN (
 			SELECT
-				B.ITEM_NO 		
+				B.CAR_CODE		
 			FROM CAR_ITEM A
-			INNER JOIN ITEM B ON A.ITEM_NO =B.ITEM_NO 
-			WHERE A.CAR_CODE =#{carCode}
+			INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+			WHERE A.ITEM_NO =#{itemNo}
 		)
 		
     </select>
@@ -155,7 +205,7 @@
     <delete id="deleteCarItem">
     	DELETE 
     	FROM CAR_ITEM
-    	WHERE CAR_CODE=#{carCode}
+    	WHERE ITEM_NO=#{itemNo}
     </delete>
     
     <insert id="insertCarItem">
@@ -289,7 +339,7 @@
 			A.SUM_CNT, 
 			A.REG_DT
 		FROM ITEM_RCAR_SUM A
-		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
 		<if test="itemNo != null and itemNo != ''">
 			AND A.ITEM_NO=#{itemNo}
@@ -303,10 +353,11 @@
     </delete>
     <insert id="insertItemRcarSum">
     	INSERT INTO ITEM_RCAR_SUM(MON, ITEM_NO, SUM_CNT, REG_DT)
-		SELECT MON, ITEM_NO, SUM(CNT), NOW() 
-		FROM ITEM_MON_RCAR
-		WHERE MON=#{mon}
-		GROUP BY MON, ITEM_NO
+		SELECT A.MON, A.ITEM_NO, SUM(A.CNT), NOW() 
+		FROM ITEM_MON_RCAR A
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE A.MON=#{mon}
+		GROUP BY A.MON, A.ITEM_NO
     </insert>
     
 	<select id="getItemCkdSumList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
@@ -317,7 +368,7 @@
 			A.SUM_CNT, 
 			A.REG_DT
 		FROM ITEM_CKD_SUM A
-		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
 		<if test="itemNo != null and itemNo != ''">
 			AND A.ITEM_NO=#{itemNo}
@@ -331,10 +382,11 @@
     </delete>
     <insert id="insertItemCkdSum">
     	INSERT INTO ITEM_CKD_SUM(MON, ITEM_NO, SUM_CNT, REG_DT)
-		SELECT MON, ITEM_NO, SUM(CNT), NOW() 
-		FROM ITEM_MON_CKD
-		WHERE MON=#{mon}
-		GROUP BY MON, ITEM_NO
+		SELECT A.MON, A.ITEM_NO, SUM(A.CNT), NOW() 
+		FROM ITEM_MON_CKD A
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE A.MON=#{mon}
+		GROUP BY A.MON, A.ITEM_NO
     </insert>
     
     <select id="getItemAsSumList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
@@ -345,7 +397,7 @@
 			A.SUM_CNT, 
 			A.REG_DT
 		FROM ITEM_AS_SUM A
-		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
 		<if test="itemNo != null and itemNo != ''">
 			AND A.ITEM_NO=#{itemNo}
@@ -359,17 +411,88 @@
     </delete>
     <insert id="insertItemAsSum">
     	INSERT INTO ITEM_AS_SUM(MON, ITEM_NO, SUM_CNT, REG_DT)
-		SELECT MON, ITEM_NO, SUM(CNT), NOW() 
-		FROM ITEM_MON_AS
+		SELECT A.MON, A.ITEM_NO, SUM(A.CNT), NOW() 
+		FROM ITEM_MON_AS A
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE A.MON=#{mon}
+		GROUP BY A.MON, A.ITEM_NO
+    </insert>
+    
+    <select id="getItemMonMobisList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		select 
+			a.ITEM_NO
+			,b.ITEM_NM
+			,a.MON
+			,a.CNT
+			,a.REG_DT
+		FROM ITEM_MON_MOBIS A
+		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE A.MON=#{mon}
+		<if test="itemNo != null and itemNo != ''">
+			AND A.ITEM_NO=#{itemNo}
+		</if>
+		ORDER BY A.ITEM_NO			
+    </select>
+    
+    
+    <delete id="deleteItemMonMobis">
+    	DELETE 
+    	FROM ITEM_MON_MOBIS
+    	WHERE MON=#{mon}
+    </delete>
+    
+    <insert id="insertItemMonMobis">
+    	INSERT INTO ITEM_MON_MOBIS(
+    		ITEM_NO    		   				
+    		, MON
+    		, CNT
+    		,REG_DT
+    	)VALUES(
+    		#{itemNo}    		
+    		,#{mon}    		
+    		,#{cnt}
+    		,NOW()
+    	)
+    </insert>
+    
+    <select id="getItemMobisSumList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		select 
+			A.MON, 
+			A.ITEM_NO,
+			B.ITEM_NM,
+			A.SUM_CNT, 
+			A.REG_DT
+		FROM ITEM_MOBIS_SUM A
+		INNER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
-		GROUP BY MON, ITEM_NO
+		<if test="itemNo != null and itemNo != ''">
+			AND A.ITEM_NO=#{itemNo}
+		</if>
+		ORDER BY A.ITEM_NO			
+    </select>
+    <delete id="deleteItemMobisSum">
+    	DELETE 
+    	FROM ITEM_MOBIS_SUM
+    	WHERE MON=#{mon}
+    </delete>
+    <insert id="insertItemMobisSum">
+    	INSERT INTO ITEM_MOBIS_SUM(MON, ITEM_NO, SUM_CNT, REG_DT)
+		SELECT 
+			A.MON 
+			,A.ITEM_NO
+			,SUM(A.CNT)
+			,NOW() 
+		FROM ITEM_MON_MOBIS A
+		INNER JOIN  ITEM B ON A.ITEM_NO=B.ITEM_NO
+		WHERE A.MON=#{mon}
+		GROUP BY A.MON, A.ITEM_NO
     </insert>
     
     <select id="getPriceSum" resultType="kr.co.n3n.smartcity.common.model.CommMap">
-		SELECT 
-			CAR_CODE
+		SELECT 	
+			TT2.CAR_NM
 			,ITEM_KIND
-			,ITEM_NO
+			,TT1.ITEM_NO
 			,ITEM_NM
 			,OEM_PRICE
 			,AS_PRICE
@@ -377,45 +500,64 @@
 			,CKD_CNT
 			,RCAR_CNT
 			,AS_CNT
-			,TOTAL_CNT	
-			,OEM_PRICE*TOTAL_CNT OEM_TOTAL_PRICE
+			,MOBIS_CNT
+			,TOTAL_CNT			
+			,CASE WHEN MOBIS_CNT=0 THEN
+				OEM_PRICE*TOTAL_CNT
+			ELSE
+				OEM_PRICE*MOBIS_CNT
+			END OEM_TOTAL_PRICE
 			,AS_PRICE*AS_CNT AS_TOTAL_PRICE
-			,(OEM_PRICE*TOTAL_CNT)+(AS_PRICE*AS_CNT) TOTAL_PRICE
+			,CASE WHEN MOBIS_CNT=0 THEN
+				(OEM_PRICE*TOTAL_CNT)+(AS_PRICE*AS_CNT)
+			ELSE
+				(OEM_PRICE*MOBIS_CNT)+(AS_PRICE*AS_CNT)
+			END TOTAL_PRICE
 		FROM
 		(
 			SELECT 
-				T1.CAR_CODE, T2.ITEM_KIND, T2.ITEM_NO, T2.ITEM_NM
+				T2.ITEM_KIND
+				,T2.ITEM_NO
+				,T2.ITEM_NM
 				,IFNULL(T2.OEM_PRICE, 0) OEM_PRICE
 				,IFNULL(T2.AS_PRICE, 0) AS_PRICE
 				,IFNULL(T3.CAR_CNT, 0) CAR_CNT
 				,IFNULL(T4.CKD_CNT, 0) CKD_CNT
 				,IFNULL(T5.RCAR_CNT, 0) RCAR_CNT
 				,IFNULL(T6.AS_CNT, 0) AS_CNT
+				,IFNULL(T7.MOBIS_CNT, 0) MOBIS_CNT 
 				, IFNULL(T3.CAR_CNT, 0)+IFNULL(T4.CKD_CNT, 0)+IFNULL(T5.RCAR_CNT, 0) TOTAL_CNT
-			FROM
-			CAR_ITEM T1 
-			INNER JOIN ITEM T2 ON T1.`ITEM_NO`=T2.`ITEM_NO`
+			from ITEM T2 
 			LEFT OUTER JOIN 
 			(
-				SELECT B.ITEM_NO, SUM(CNT) CAR_CNT 
-				FROM CAR_MON_CNT A 
-				INNER JOIN CAR_ITEM B ON A.`CAR_CODE`=B.`CAR_CODE` 
-				WHERE A.MON=#{mon}
-				GROUP BY B.ITEM_NO
-			) T3 ON T2.`ITEM_NO`=T3.ITEM_NO
+				SELECT ITEM_NO, SUM_CNT CAR_CNT FROM CAR_MON_SUM WHERE MON=#{mon}
+			) T3 ON T2.ITEM_NO=T3.ITEM_NO
 			LEFT OUTER JOIN 
 			(
 				SELECT ITEM_NO, SUM_CNT CKD_CNT FROM ITEM_CKD_SUM WHERE MON=#{mon}
-			) T4 ON T2.`ITEM_NO`=T4.ITEM_NO
+			) T4 ON T2.ITEM_NO=T4.ITEM_NO
 			LEFT OUTER JOIN 
 			(
 				SELECT ITEM_NO, SUM_CNT RCAR_CNT FROM ITEM_RCAR_SUM WHERE MON=#{mon}
-			) T5 ON T2.`ITEM_NO`=T5.ITEM_NO
+			) T5 ON T2.ITEM_NO=T5.ITEM_NO
 			LEFT OUTER JOIN 
 			(
 				SELECT ITEM_NO, SUM_CNT AS_CNT  FROM ITEM_AS_SUM WHERE MON=#{mon}
-			) T6 ON T2.`ITEM_NO`=T6.ITEM_NO
-		) TT1
+			) T6 ON T2.ITEM_NO=T6.ITEM_NO
+			LEFT OUTER JOIN 
+			(
+				SELECT ITEM_NO, SUM_CNT mobis_CNT  FROM ITEM_mobis_SUM WHERE MON=#{mon}
+			) T7 ON T2.ITEM_NO=T7.ITEM_NO
+		) as TT1		
+		LEFT OUTER JOIN (
+			SELECT 
+				A.ITEM_NO 
+				,GROUP_CONCAT(B.CAR_NM SEPARATOR '|') AS CAR_NM
+			FROM CAR_ITEM A
+			INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+			GROUP BY ITEM_NO
+		) AS TT2 ON TT1.ITEM_NO=TT2.ITEM_NO
+		ORDER BY MOBIS_CNT ASC
 	</select>
     
     

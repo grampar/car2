@@ -1,10 +1,10 @@
 <template>
   <!-- contents -->
-  <div class="contents-wrap">
+  <div>
     <!-- 공통영역 x -->
     <section class="contents">
       <div class="contents-info">
-        <h3 class="contents-title">월별 as</h3>
+        <h3 class="contents-title">자동차</h3>        
       </div>
       <div style="display:flex;flex-direction: row">
         <div style="width:50%;padding:3px;">
@@ -12,7 +12,7 @@
             :search-list-data="Raw.searchListData"
             :list-data="Raw.searchListData"
             @searchresult="searchResultRaw"
-            searchcolumn="ITEM_NO"
+            searchcolumn="CAR_CODE"
           />
           <gridmain
             :list-data="Raw.listData"
@@ -44,6 +44,7 @@
           />
         </div>
       </div>
+      
     </section>
     <!-- //공통영역 x -->
   </div>
@@ -53,17 +54,18 @@
 <script>
 import carApi from "@/api/car";
 export default {
-  name: "asmon",
+  name: "car",
   data() {
     return {
       Raw: {
         listMeta: {          
           meta: [
-            { col: "ITEM_NO", name: "품번", size: "180px" },
-            { col: "ITEM_NM", name: "품명", size: "300px" },
             { col: "MON", name: "월", size: "100px" },
-            { col: "CNT", name: "수량" },
-          ],
+            { col: "CAR_CODE", name: "자동차코드", size: "150px" },
+            { col: "CAR_NM", name: "자동차명", size: "300px" },            
+            { col: "CNT", name: "수량"},
+
+            ],
         },
         listData: [],
         searchListData: [],
@@ -93,16 +95,20 @@ export default {
             text: "집계",
           },
         ],
+        paginYn: "N",        
         totalCount: 0,
-        paginYn: "N",
       },
       Sum: {
         listMeta: {
+          callback: function(vm, data) {
+            vm.$options.parent.showLayerPopup(data);
+          },
           meta: [
-            { col: "ITEM_NO", name: "품번", size: "180px" },
-            { col: "ITEM_NM", name: "품명", size: "300px" },
-            { col: "MON", name: "월", size: "100px" },
-            { col: "SUM_CNT", name: "수량" },
+            { col: "MON", name: "월", size: "80px" },
+            { col: "ITEM_NO", name: "번호", size: "120px" },
+            { col: "ITEM_NM", name: "아이템명", size: "280px" },            
+            { col: "CAR_NM", name: "자동차명", size: "200px"},
+            { col: "SUM_CNT", name: "수량"},
           ],
         },
         listData: [],
@@ -116,14 +122,16 @@ export default {
             text: "조회",
           },
         ],
-        totalCount: 0,
         paginYn: "N",
+        totalCount: 0,
       },
+      mode: "",
     };
   },
-  created() {},
+  created() {    
+  },
   mounted() {
-    this.getSearch();
+    this.search();
     //setTimeout(this.getSearch, 500);
   },
   updated() {},
@@ -133,7 +141,7 @@ export default {
         //this.Raw.listData.splice(0, this.Raw.listData.length);
         this.Raw.listData = searchData;
       } else {
-        this.getRawList();
+        this.search();
       }
     },
     searchResultSum(searchData) {
@@ -144,7 +152,7 @@ export default {
         this.getSumList();
       }
     },
-    getSearch() {
+     getSearch() {
       this.search();
     },
     async search() {
@@ -152,15 +160,14 @@ export default {
 
       await this.getRawList();
     },
+
     async getRawList() {
       let me = this;
-      let param = {
-        mon: this.getMon(),
-      };
+      let param = {mon:this.getMon()};
       carApi
-        .getItemMonAsList(param)
+        .getCarMonCntList(param)
         .then((result) => {
-          console.log("getItemMonCkdList:", result);
+          console.log("getCarMonCntList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
             me.Raw.totalCount = data.length;
@@ -174,22 +181,22 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("getItemList:", error);
+          alert("오류발생 관리자에게 문의");
+          console.error(error);
         });
     },
     async getSumList() {
       let me = this;
       let param = {
-        mon: this.getMon(),
+        mon: this.getMon()      
       };
       carApi
-        .getItemAsSumList(param)
+        .getCarMonSumList(param)
         .then((result) => {
-          console.log("getItemAsSumList:", result);
+          console.log("getCarMonCntList:", result);
           if (result.data.retCode === "0") {
             let data = result.data.data;
             me.Sum.totalCount = data.length;
-
             me.Sum.listData.splice(0, me.Sum.listData.length);
             me.Sum.searchListData.splice(0, me.Sum.searchListData.length);
             me.Sum.listData = data;
@@ -199,7 +206,8 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("getItemList:", error);
+          alert("오류발생 관리자에게 문의");
+          console.error(error);
         });
     },
     getMon() {
@@ -211,12 +219,13 @@ export default {
       var frm = new FormData();
       frm.append("file", file);
       frm.append("mon", this.getMon());
+
       let me = this;
 
       carApi
-        .itemMonAsUpload(frm)
+        .carFileupload(frm)
         .then((result) => {
-          console.log("itemMonAsUpload", result);
+          console.log(result);
           alert("업로드 완료");
           me.search();
         })
@@ -231,9 +240,9 @@ export default {
         mon: this.getMon(),
       };
       carApi
-        .insertItemAsSum(param)
+        .insertCarMonSum(param)
         .then((result) => {
-          console.log("insertItemAsSum:", result);
+          console.log("insertItemRcarSum:", result);
           if (result.data.retCode === "0") {
             me.getSumList();
           } else {
@@ -242,7 +251,7 @@ export default {
         })
         .catch((error) => {
           alert("오류발생");
-          console.error("insertItemAsSum:", error);
+          console.error("insertItemRcarSum:", error);
         });
     },
   },

@@ -57,10 +57,7 @@ export default {
   data() {
     return {
       Raw: {
-        listMeta: {
-          dblclickCallback: function(vm, data) {
-            vm.$options.parent.showLayerPopup(data);
-          },
+        listMeta: {          
           meta: [
             { col: "ITEM_NO", name: "품번", size: "180px" },
             { col: "ITEM_NM", name: "품명", size: "300px" },
@@ -147,7 +144,6 @@ export default {
         this.getSumList();
       }
     },
-
     getSearch() {
       this.search();
     },

@@ -21,6 +21,10 @@ const router = new VueRouter({
       component: () => import("@/view/car_item.vue"),
     },
     {
+      path: "/car_mon",
+      component: () => import("@/view/car_mon.vue"),
+    },
+    {
       path: "/rcar",
       component: () => import("@/view/rcar.vue"),
     },
@@ -33,9 +37,14 @@ const router = new VueRouter({
       component: () => import("@/view/asmon.vue"),
     },
     {
+      path: "/mobis",
+      component: () => import("@/view/mobis.vue"),
+    },
+    {
       path: "/price_sum",
       component: () => import("@/view/price_sum.vue"),
     },
+    
   ],
 });
 /* 

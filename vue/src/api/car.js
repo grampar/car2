@@ -6,15 +6,24 @@ export default {
   getCarList: (payload) => {
     return HTTP.post(`${TargetURL}/getCarList`, payload);
   },
+  insertCar: (payload) => {
+    return HTTP.post(`${TargetURL}/insertCar`, payload);
+  },  
+  getCarMonCntList: (payload) => {
+    return HTTP.post(`${TargetURL}/getCarMonCntList`, payload);
+  },
   carFileupload: (frm) => {
-    return HTTP.post(`${TargetURL}/carUpload`, frm, {
+    return HTTP.post(`${TargetURL}/insertCarMonCnt`, frm, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
-  getCarMonCntList: (payload) => {
-    return HTTP.post(`${TargetURL}/getCarMonCntList`, payload);
+  getCarMonSumList: (payload) => {
+    return HTTP.post(`${TargetURL}/getCarMonSumList`, payload);
+  },
+  insertCarMonSum: (payload) => {
+    return HTTP.post(`${TargetURL}/insertCarMonSum`, payload);
   },
   getItemList: (payload) => {
     return HTTP.post(`${TargetURL}/getItemList`, payload);
@@ -70,6 +79,8 @@ export default {
     return HTTP.post(`${TargetURL}/insertItemCkdSum`, payload);
   },
 
+
+  /* AS */
   getItemMonAsList: (payload) => {
     return HTTP.post(`${TargetURL}/getItemMonAsList`, payload);
   },
@@ -86,6 +97,26 @@ export default {
   insertItemAsSum: (payload) => {
     return HTTP.post(`${TargetURL}/insertItemAsSum`, payload);
   },
+
+  /* mobis */
+  getItemMonMobisList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemMonMobisList`, payload);
+  },
+  itemMonMobisUpload: (frm) => {
+    return HTTP.post(`${TargetURL}/itemMonMobisUpload`, frm, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+  getItemAMobisSumList: (payload) => {
+    return HTTP.post(`${TargetURL}/getItemMobisSumList`, payload);
+  },
+  insertItemMobisSum: (payload) => {
+    return HTTP.post(`${TargetURL}/insertItemMobisSum`, payload);
+  },
+
+
   getPriceSum: (payload) => {
     return HTTP.post(`${TargetURL}/getPriceSum`, payload);
   },

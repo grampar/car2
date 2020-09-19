@@ -78,7 +78,9 @@
         ></v-avatar>
       </v-btn>
     </v-app-bar>
-
+    <div id="loading" style="position:absolute;visibility:hidden;width:100%;height:100%;z-index:9999292929;background:white;opacity:0.5;align:center">
+      <img src="/loading.gif">
+    </div>
     <v-main>
       <v-container class="fill-height" fluid>
         <router-view></router-view>
@@ -102,12 +104,14 @@ export default {
         text: "매출",
         model: true,
         children: [
-          { icon: "mdi-plus", text: "Car 관리", to: "/car" },
           { icon: "mdi-plus", text: "item 관리", to: "/item" },
+          { icon: "mdi-plus", text: "Car 관리", to: "/car" },          
           { icon: "mdi-plus", text: "자동차별 Item 관리", to: "/car_item" },
+          { icon: "mdi-plus", text: "월별 자동차수량 입력", to: "/car_mon" },
           { icon: "mdi-plus", text: "월별 Rcar 입력", to: "/rcar" },
           { icon: "mdi-plus", text: "월별 ckd(캠스) 입력", to: "/ckd" },
           { icon: "mdi-plus", text: "월별 as 입력", to: "/asmon" },
+          { icon: "mdi-plus", text: "월별 mobis 입력", to: "/mobis" },
           { icon: "mdi-plus", text: "매출현황", to: "/price_sum" },
         ],
       },
