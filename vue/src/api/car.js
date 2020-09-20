@@ -120,4 +120,5 @@ export default {
   getPriceSum: (payload) => {
     return HTTP.post(`${TargetURL}/getPriceSum`, payload);
   },
+
 };

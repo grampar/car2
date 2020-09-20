@@ -44,6 +44,18 @@ const router = new VueRouter({
       path: "/price_sum",
       component: () => import("@/view/price_sum.vue"),
     },
+    {
+      path: "/source",
+      component: () => import("@/view/source.vue"),
+    },
+    {
+      path: "/source_item",
+      component: () => import("@/view/source_item.vue"),
+    },
+    {
+      path: "/source_sum",
+      component: () => import("@/view/source_sum.vue"),
+    },
     
   ],
 });

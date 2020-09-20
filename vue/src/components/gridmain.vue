@@ -306,7 +306,7 @@ export default {
         tr.setAttribute("data-grid", JSON.stringify(data));
         tr.setAttribute("style", "cursor:pointer");
         meta.forEach((meta) => {
-          this.createBodyTd(tr, data, meta);
+          this.createTd(tr, data, meta);
         });
 
         if (dblclickCallback) {
@@ -345,7 +345,7 @@ export default {
 
       return tr;
     },
-    createBodyTd(tr, data, meta) {
+    createTd(tr, data, meta) {
       let td = document.createElement("td");
       let me = this;
       if (meta.col == "input=checkbox") {
@@ -369,6 +369,25 @@ export default {
           meta.callback(me, param);
         });
         td.append(button);
+       } else if (meta.col == "input=text") {
+        let text = document.createElement("input");
+        text.setAttribute("type", "text");
+        if(data[meta.col2]){
+          text.value=data[meta.col2];
+        }else{
+          text.value="";
+        }
+        
+
+        text.addEventListener("blur", (e)=>{
+          let tr=e.target.parentNode.parentNode;
+          let data=JSON.parse(tr.dataset.grid);
+          data[meta.col2]=e.target.value;
+
+          tr.dataset.grid=JSON.stringify(data);          
+        })
+                
+        td.append(text);
       } else {
         let txt = data[meta.col];
         if(txt){

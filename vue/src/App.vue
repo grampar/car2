@@ -120,7 +120,11 @@ export default {
         "icon-alt": "mdi-chevron-down",
         text: "매입",
         model: true,
-        children: [],
+        children: [
+          { icon: "mdi-plus", text: "원재료 관리", to: "/source" },
+          { icon: "mdi-plus", text: "원재료 아이템", to: "/source_item" },
+          { icon: "mdi-plus", text: "매입 현황", to: "/source_sum" },
+        ],
       },
     ],
   }),

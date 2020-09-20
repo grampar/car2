@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="src">
+	
+	
+    <select id="getSrcList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		select 
+			A.SRC_NO
+			,A.SRC_NM
+			,A.SRC_PRICE
+			,A.SRC_UNIT
+			,A.REG_DT
+		FROM SRC A		
+		where 1=1
+		<if test="srcNo != null and srcNo != ''">
+			AND A.SRC_NO=#{srcNo}
+		</if>
+		ORDER BY A.REG_DT DESC			
+    </select>
+    
+    
+    <insert id="insertSrc">
+    	INSERT INTO SRC(
+    		SRC_NO
+    		,SRC_NM 
+    		,SRC_PRICE
+    		,SRC_UNIT    		   				
+    		,REG_DT    		
+    		,UPDATE_DT
+    	)VALUES(
+    		#{srcNo}
+    		,#{srcNm}    		
+    		,#{srcPrice}
+    		,#{srcUnit}    		
+    		,NOW()    		
+    		,NOW()
+    	)
+    </insert>
+   
+   <update id="updateSrc">
+    	UPDATE SRC SET    		 
+    		SRC_NM=#{srcNm}
+    		,SRC_PRICE=#{srcPrice}
+    		,SRC_UNIT=#{srcUnit}
+    		,UPDATE_DT=now()		
+    	WHERE SRC_NO=#{srcNo}    	
+    </update>
+    
+    
+    <select id="getSrcItemList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
+		SELECT
+			B.SRC_NO , 
+			B.SRC_NM ,
+			'CHK' CHECKED,
+			A.SRC_RATE			
+		FROM SRC_ITEM A
+		INNER JOIN SRC B ON A.SRC_NO =B.SRC_NO 
+		WHERE A.ITEM_NO =#{itemNo}
+		UNION ALL
+		SELECT 
+			B.SRC_NO, 
+			B.SRC_NM,
+			'' CHECKED,
+			NULL AS SRC_RATE
+		FROM SRC B
+		WHERE SRC_NO NOT IN (
+			SELECT
+				B.SRC_NO		
+			FROM SRC_ITEM A
+			INNER JOIN SRC B ON A.SRC_NO =B.SRC_NO 
+			WHERE A.ITEM_NO =#{itemNo}
+		)
+    </select>
+    
+    
+    <insert id="insertSrcItem">
+    	INSERT INTO	SRC_ITEM(
+    		SRC_NO
+    		,ITEM_NO 
+    		,SRC_RATE 
+    		,REG_DT
+    	)
+		VALUES(
+			#{srcNo}
+    		,#{itemNo} 
+    		,#{srcRate}
+    		,now()
+		)
+    </insert>
+    
+    <delete id="deleteSrcItem">
+    	DELETE FROM	SRC_ITEM
+    	WHERE ITEM_NO=#{itemNo}
+    </delete>
+    
+    
+    
+    <insert id="insertSrcSum">
+    	INSERT INTO SRC_SUM(MON ,SRC_NO , STANDARD_PURCHASE , DEADLINE_PURCHASE , REG_DT )				
+		SELECT MON, SRC_NO, SUM(STANDARD_PURCHASE) TOTAL_PURCHASE, 0, NOW()
+		FROM 
+		(
+			SELECT
+				A.MON 
+				,B.SRC_NO
+				,A.ITEM_NO						
+				,SUM_CNT AS CAR_CNT 
+				,B.SRC_RATE
+				,SUM_CNT*B.SRC_RATE*1.015 AS STANDARD_PURCHASE
+			FROM CAR_MON_SUM A
+			INNER JOIN SRC_ITEM B ON A.ITEM_NO =B.ITEM_NO
+			WHERE A.MON=#{mon}
+		) AS T1
+		GROUP BY MON, SRC_NO
+    </insert>
+    
+    <delete id="deleteSrcSum">
+    	DELETE FROM	SRC_SUM
+    	WHERE MON=#{mon}
+    </delete>
+    
+    
+    <update id="updateSrcSum">
+    	update SRC_SUM set
+    	DEADLINE_PURCHASE =#{deadlinePurchase}
+    	where MON=#{mon}
+    	and SRC_NO=#{srcNo} 
+    </update>
+    
+    
+    <select id="getSrcSumList" resultType="kr.co.n3n.smartcity.common.model.CommMap">		
+		SELECT 
+			T1.SRC_NO 
+			,T3.SRC_NM
+			,T1.ITEM_NO
+			,T2.ITEM_NM
+			,T3.SRC_UNIT 
+			,T1.CAR_CNT
+			,T1.SRC_RATE
+			,T3.SRC_PRICE 
+			,T1.STANDARD_PURCHASE 
+			,T1.DEADLINE_PURCHASE
+			,T1.STANDARD_PURCHASE-T1.DEADLINE_PURCHASE AS PURCHASE_MINUS
+			,T3.SRC_PRICE*T1.STANDARD_PURCHASE STANDARD_PRICE
+			,T3.SRC_PRICE*T1.DEADLINE_PURCHASE DEADLINE_PRICE
+			,(T3.SRC_PRICE*T1.STANDARD_PURCHASE)-(T3.SRC_PRICE*T1.DEADLINE_PURCHASE) AS PRICE_MINUS	
+		FROM 
+		(
+			SELECT 
+				SRC_NO 
+				, '' ITEM_NO
+				, 0 CAR_CNT
+				, 0 SRC_RATE
+				, STANDARD_PURCHASE 
+				, DEADLINE_PURCHASE
+			FROM SRC_SUM 
+			WHERE MON=#{mon} 	 
+			UNION ALL
+			SELECT 
+				B.SRC_NO
+				,A.ITEM_NO						
+				,SUM_CNT AS CAR_CNT 
+				,B.SRC_RATE
+				,SUM_CNT*B.SRC_RATE*1.015 AS STANDARD_PURCHASE
+				,0 DEADLINE_PURCHASE
+			FROM CAR_MON_SUM A
+			INNER JOIN SRC_ITEM B ON A.ITEM_NO =B.ITEM_NO
+			WHERE A.MON=#{mon}
+		) T1 
+		LEFT OUTER JOIN ITEM T2  ON T1.ITEM_NO =T2.ITEM_NO
+		LEFT OUTER JOIN SRC T3 ON  T1.SRC_NO =T3.SRC_NO
+		ORDER BY SRC_NO    		
+    </select>
+    
+    
+    
+    
+</mapper>

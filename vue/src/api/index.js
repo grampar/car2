@@ -24,6 +24,7 @@ apiConfig.interceptors.response.use(function(response) {
   document.getElementById("loading").style.visibility="hidden"
   return response;
 }, function(error) {
+  document.getElementById("loading").style.visibility="hidden"
   // Do something with response error
   console.log('Error fetching the data');
   return Promise.reject(error);
