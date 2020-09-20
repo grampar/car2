@@ -80,7 +80,7 @@ export default {
         {
           type: "normal",
           callback: function(vm) {
-            vm.$options.parent.getSearch();
+            vm.$options.parent.insertSrcSum();
           },
           text: "집계",
         },
@@ -151,14 +151,13 @@ export default {
         });
     },
     insertSrcSum(param) {
-      let data = { itemNo: this.Item.itemNo, list: param };
-      let itemNo = this.Item.itemNo;
+      let data = { mon: this.getMon(), list: param };      
       srcApi
         .insertSrcSum(data)
         .then((result) => {
           console.log("insertSrcSum:", result);
           if (result.data.retCode === "0") {
-            this.getSrcSumList(itemNo);
+            this.getSrcSumList();
           } else {
             console.log(result.data.errMsg);
           }
