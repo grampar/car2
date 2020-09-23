@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       Raw: {
-        listMeta: {          
+        listMeta: {
           meta: [
             { col: "ITEM_NO", name: "품번", size: "180px" },
             { col: "ITEM_NM", name: "품명", size: "300px" },
@@ -73,21 +73,21 @@ export default {
           },
           {
             type: "normal",
-            callback: function(vm) {
+            callback: function (vm) {
               vm.$options.parent.getSearch();
             },
             text: "조회",
           },
           {
             type: "Import",
-            callback: function(vm, file) {
+            callback: function (vm, file) {
               vm.$options.parent.upload(file);
             },
             text: "Excel 업로드",
           },
           {
             type: "normal",
-            callback: function(vm) {
+            callback: function (vm) {
               vm.$options.parent.insertSum();
             },
             text: "집계",
@@ -110,7 +110,7 @@ export default {
         headerButtons: [
           {
             type: "normal",
-            callback: function(vm) {
+            callback: function (vm) {
               vm.$options.parent.getSumList();
             },
             text: "조회",
@@ -174,6 +174,7 @@ export default {
           }
         })
         .catch((error) => {
+          alert("오류발생");
           console.error("getItemList:", error);
         });
     },

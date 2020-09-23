@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="car">
 	
-	<select id="getCarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">        
+	<select id="getCarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">	        
 		SELECT 
 			CAR_CODE
 			,CAR_NM
@@ -222,11 +222,11 @@
     
     <select id="getItemMonRcarList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		select 
-			a.ITEM_NO
-			,b.ITEM_NM
-			,a.MON
-			,a.CNT
-			,a.REG_DT
+			A.ITEM_NO
+			,B.ITEM_NM
+			,A.MON
+			,A.CNT
+			,A.REG_DT
 		FROM ITEM_MON_RCAR A
 		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
@@ -259,11 +259,11 @@
 
     <select id="getItemMonCkdList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		select 
-			a.ITEM_NO
-			,b.ITEM_NM
-			,a.MON
-			,a.CNT
-			,a.REG_DT
+			A.ITEM_NO
+			,B.ITEM_NM
+			,A.MON
+			,A.CNT
+			,A.REG_DT
 		FROM ITEM_MON_CKD A
 		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
@@ -296,11 +296,11 @@
     
     <select id="getItemMonAsList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		select 
-			a.ITEM_NO
-			,b.ITEM_NM
-			,a.MON
-			,a.CNT
-			,a.REG_DT
+			A.ITEM_NO
+			,B.ITEM_NM
+			,A.MON
+			,A.CNT
+			,A.REG_DT
 		FROM ITEM_MON_AS A
 		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE MON=#{mon}
@@ -420,11 +420,11 @@
     
     <select id="getItemMonMobisList" resultType="kr.co.n3n.smartcity.common.model.CommMap">
 		select 
-			a.ITEM_NO
-			,b.ITEM_NM
-			,a.MON
-			,a.CNT
-			,a.REG_DT
+			A.ITEM_NO
+			,B.ITEM_NM
+			,A.MON
+			,A.CNT
+			,A.REG_DT
 		FROM ITEM_MON_MOBIS A
 		LEFT OUTER JOIN ITEM B ON A.ITEM_NO=B.ITEM_NO
 		WHERE A.MON=#{mon}
@@ -546,7 +546,7 @@
 			) T6 ON T2.ITEM_NO=T6.ITEM_NO
 			LEFT OUTER JOIN 
 			(
-				SELECT ITEM_NO, SUM_CNT mobis_CNT  FROM ITEM_mobis_SUM WHERE MON=#{mon}
+				SELECT ITEM_NO, SUM_CNT mobis_CNT  FROM item_mobis_sum WHERE MON=#{mon}
 			) T7 ON T2.ITEM_NO=T7.ITEM_NO
 		) as TT1		
 		LEFT OUTER JOIN (

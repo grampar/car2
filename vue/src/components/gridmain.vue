@@ -12,7 +12,9 @@
           :worksheet="excelName"
           :name="excelName"
         >
-          <span><button class="btn btn-c-primary">Excel Download</button></span>
+          <span>
+            <button class="btn btn-c-primary">Excel Download</button>
+          </span>
         </downloadExcel>
       </div>
       <div class="btns-box" :id="gridId + '_header'"></div>
@@ -22,27 +24,16 @@
         <table :id="gridId + '_thader'"></table>
       </div>
     </div>
-    <div
-      class="table-list-box"
-      style="overflow:auto;"
-      :style="{ height: gridHeight }"
-    >
+    <div class="table-list-box" style="overflow:auto;" :style="{ height: gridHeight }">
       <div>
         <div class="table-list" style="height:100%;">
           <table :id="gridId"></table>
         </div>
       </div>
 
-      <div
-        class="table-pagenation"
-        :id="gridId + '_paging'"
-        style="display:none"
-      >
+      <div class="table-pagenation" :id="gridId + '_paging'" style="display:none">
         <div class="pagination-box">
-          <button
-            type="button"
-            class="pagination-btn pagination-first"
-          ></button>
+          <button type="button" class="pagination-btn pagination-first"></button>
           <button type="button" class="pagination-btn pagination-prev"></button>
           <div class="pagination-pages"></div>
           <button type="button" class="pagination-btn pagination-next"></button>
@@ -73,7 +64,7 @@ export default {
     gridHeight: String,
     gridname: String,
   },
-  data: function() {
+  data: function () {
     return {
       totalPage: 0,
       totalGroup: 0,
@@ -85,7 +76,7 @@ export default {
     };
   },
   watch: {
-    listData: function() {
+    listData: function () {
       this.createBody();
       if (this.pagingYn === "Y") {
         this.createPageNavi();
@@ -262,7 +253,7 @@ export default {
         let checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("id", "totalCheck");
-        checkbox.addEventListener("click", function(e) {
+        checkbox.addEventListener("click", function (e) {
           e.stopPropagation();
 
           let checkboxs = document.querySelectorAll(
@@ -310,12 +301,12 @@ export default {
         });
 
         if (dblclickCallback) {
-          tr.addEventListener("dblclick", function() {
+          tr.addEventListener("dblclick", function () {
             dblclickCallback(me, data);
           });
         }
 
-        tr.addEventListener("click", function(e) {
+        tr.addEventListener("click", function (e) {
           e.stopPropagation();
           if (me.preTr) {
             me.preTr.setAttribute("style", "cursor:pointer;background:white");
@@ -356,46 +347,47 @@ export default {
           if (data[meta.name.toUpperCase()] === "CHK") {
             checkbox.setAttribute("checked", true);
           }
-        }        
+        }
         td.append(checkbox);
       } else if (meta.col == "input=button") {
         let button = document.createElement("button");
         button.setAttribute("type", "button");
         button.setAttribute("class", "btn btn-c-secondary btn-size-sm");
         button.innerHTML = "delete";
-        button.addEventListener("click", function(e) {
+        button.addEventListener("click", function (e) {
           let tr = e.target.parentNode.parentNode;
           let param = JSON.parse(tr.dataset.grid);
           meta.callback(me, param);
         });
         td.append(button);
-       } else if (meta.col == "input=text") {
+      } else if (meta.col == "input=text") {
+        let divtxt = document.createElement("div");
+        divtxt.setAttribute("class", "item-input");
         let text = document.createElement("input");
         text.setAttribute("type", "text");
-        if(data[meta.col2]){
-          text.value=data[meta.col2];
-        }else{
-          text.value="";
+        if (data[meta.col2]) {
+          text.value = data[meta.col2];
+        } else {
+          text.value = "";
         }
-        
 
-        text.addEventListener("blur", (e)=>{
-          let tr=e.target.parentNode.parentNode;
-          let data=JSON.parse(tr.dataset.grid);
-          data[meta.col2]=e.target.value;
+        text.addEventListener("blur", (e) => {
+          let tr = e.target.parentNode.parentNode;
+          let data = JSON.parse(tr.dataset.grid);
+          data[meta.col2] = e.target.value;
 
-          tr.dataset.grid=JSON.stringify(data);          
-        })
-                
-        td.append(text);
+          tr.dataset.grid = JSON.stringify(data);
+        });
+        divtxt.append(text);
+        td.append(divtxt);
       } else {
         let txt = data[meta.col];
-        if(txt){
+        if (txt) {
           if (meta.limit) {
             txt = txt.substring(0, meta.limit) + "..";
           }
         }
-        
+
         if (data[meta.col]) td.innerText = txt;
       }
 
@@ -454,7 +446,7 @@ export default {
 
       // page num에 등록된 이벤트 및 dom을 제거한다.
       pageDiv.childNodes.forEach((ele, i) => {
-        ele.removeEventListener("click", function(e) {
+        ele.removeEventListener("click", function (e) {
           me.numBtnClick(e, i);
         });
         pageDiv.removeChild(ele);
@@ -466,7 +458,7 @@ export default {
         btn.textContent = i;
         btn.type = "button";
 
-        btn.addEventListener("click", function(e) {
+        btn.addEventListener("click", function (e) {
           me.numBtnClick(e, i);
         });
 
