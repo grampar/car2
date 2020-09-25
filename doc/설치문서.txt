@@ -1,0 +1,66 @@
+
+
+1. mysql
+
+
+
+2. apache
+
+yum -y install httpd
+service httpd start
+
+- 부팅시 마다 httpd가 자동으로 등록
+systemctl enable httpd.service 
+
+- apache가 제대로 동작하는지 확인
+ps -ef | grep httpd
+
+vi /etc/httpd/conf/httpd.conf
+
+DocumentRoot /root/web/
+<Directory />
+    AllowOverride None
+    Require all granted (denied를 granted로 수정)
+</Directory>
+
+service httpd status
+
+chcon -Rv --type=httpd_sys_content_t /home/web
+
+
+2.tomcat
+
+vi /usr/lib/systemd/system/tomcat.service
+
+#######
+[Unit]
+Description=Apache Tomcat 9
+After=network.target syslog.target
+
+[Service]
+Type=forking
+User=root
+Group=root
+
+ExecStart=/home/tomcat/bin/startup.sh
+ExecStop=/home/tomcat/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+###########
+
+
+데몬 리로드
+systemctl daemon-reload
+
+systemctl enable /usr/lib/systemd/system/tomcat.service
+
+
+
+systemctl start tomcat
+systemctl stop tomcat
+
+systemctl status tomcat.service 
+
+
+

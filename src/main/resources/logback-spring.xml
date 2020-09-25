@@ -2,10 +2,10 @@
 <configuration>
 
 	<!-- 변수 지정 -->
-    <property name="LOG_DIR" value="/workspace/apache-tomcat-8.5.58/logs" />
+    <property name="LOG_DIR" value="/root/logs" />
     <property name="LOG_PATH_NAME" value="${LOG_DIR}/scs.log" />
     
-    <!-- FILE Appender -->
+    <!-- FILE Appender -->llkk
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH_NAME}</file>
         <!-- 일자별로 로그파일 적용하기 -->
