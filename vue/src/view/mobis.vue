@@ -12,7 +12,7 @@
             :search-list-data="Raw.searchListData"
             :list-data="Raw.searchListData"
             @searchresult="searchResultRaw"
-            searchcolumn="ITEM_NO"
+            :searchAry="Raw.searchAry"            
           />
           <gridmain
             :list-data="Raw.listData"
@@ -20,9 +20,10 @@
             :total-count="Raw.totalCount"
             :header-buttons="Raw.headerButtons"
             :paging-yn="Raw.paginYn"
+            :excel-meta="Raw.excelMeta"
+            excel-name="월별Mobis.xls"
             gridId="grid1"
-            grid-height="50vh"
-            gridname="Raw 데이터"
+            grid-height="50vh"            
           />
         </div>
         <div style="width:50%;padding:3px">
@@ -30,7 +31,7 @@
             :search-list-data="Sum.searchListData"
             :list-data="Sum.searchListData"
             @searchresult="searchResultSum"
-            searchcolumn="ITEM_NO"
+            :searchAry="Sum.searchAry"
           />
           <gridmain
             :list-data="Sum.listData"
@@ -57,6 +58,7 @@ export default {
   data() {
     return {
       Raw: {
+        searchAry:['ITEM_NO', 'ITEM_NM'],
         listMeta: {          
           meta: [
             { col: "ITEM_NO", name: "품번", size: "180px" },
@@ -66,6 +68,12 @@ export default {
           ],
         },
         listData: [],
+        excelMeta: {
+          품번: "ITEM_NO",
+          품명: "ITEM_NM",
+          월: "MON",
+          수량: "CNT",        
+        },
         searchListData: [],
         headerButtons: [
           {
@@ -97,6 +105,7 @@ export default {
         paginYn: "N",
       },
       Sum: {
+        searchAry:['ITEM_NO', 'ITEM_NM'],
         listMeta: {
           meta: [
             { col: "ITEM_NO", name: "품번", size: "180px" },

@@ -10,7 +10,7 @@
         :search-list-data="searchListData"
         :list-data="searchListData"
         @searchresult="searchResult"
-        searchcolumn="SRC_NM"
+        :searchAry="searchAry"
       />
       <gridmain
         :list-data="listData"
@@ -187,6 +187,7 @@ export default {
   name: "source",
   data() {
     return {
+      searchAry:['SRC_NO', 'SRC_NM'],
       listMeta: {
         dblclickCallback: function(vm, data) {
           vm.$options.parent.showLayerPopup(data);

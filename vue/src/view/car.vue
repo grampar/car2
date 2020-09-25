@@ -9,7 +9,7 @@
           :search-list-data="searchListData"
           :list-data="searchListData"
           @searchresult="searchResult"
-          searchcolumn="CAR_CODE"
+          :searchAry="searchAry"
         />
         <gridmain
             :list-data="listData"
@@ -156,7 +156,8 @@ import carApi from "@/api/car";
 export default {
   name: "car",
   data() {
-    return {      
+    return {
+      searchAry:['CAR_CODE', 'CAR_NM'],      
       listMeta: {
         dblclickCallback: function(vm, data) {
           vm.$options.parent.showLayerPopup(data);
@@ -205,7 +206,7 @@ export default {
     searchResult(searchData) {
       if (searchData) {
         //this.Car.listData.splice(0, this.Car.listData.length);
-        this.Car.listData = searchData;
+        this.listData = searchData;
       } else {
         this.search();
       }

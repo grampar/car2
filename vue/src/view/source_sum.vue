@@ -6,6 +6,12 @@
       <div class="contents-info">
         <h3 class="contents-title">매입현황</h3>
       </div>
+      <search
+          :search-list-data="searchListData"
+          :list-data="searchListData"
+          @searchresult="searchResult"          
+          :searchAry="searchAry"
+        />
       <gridmain
         :list-data="listData"
         :list-meta="listMeta"
@@ -15,7 +21,7 @@
         :excel-meta="excelMeta"
         excel-name="매입현황.xls"
         gridId="grid1"
-        grid-height="65vh"
+        grid-height="50vh"
       />
     </section>
     <!-- //공통영역 x -->
@@ -26,26 +32,27 @@
 <script>
 import srcApi from "@/api/src";
 export default {
-  name: "price_sum",
+  name: "source_sum",
   data() {
     return {
+      searchAry:['SRC_NO', 'ITEM_NO'],
       listMeta: {
         dblclickCallback: function(vm, data) {
           vm.$options.parent.showLayerPopup(data);
         },
         meta: [          
-          { col: "SRC_NO", name: "GRADE", size: "210px" },
-          { col: "ITEM_NO", name: "품번", size: "180px" },
+          { col: "SRC_NO", name: "GRADE", size: "160px" },
+          { col: "ITEM_NO", name: "품번", size: "150px" },
           { col: "ITEM_NM", name: "품명", size: "100px", limit: 8 },
           { col: "CAR_CNT", name: "실적", size: "80px" },
           { col: "SRC_UNIT", name: "단위", size: "80px" },
           { col: "SRC_RATE", name: "원수", size: "80px" },
           { col: "SRC_PRICE", name: "단가", size: "100px" },
-          { col: "STANDARD_PURCHASE", name: "매입표준", size: "200px" },
-          { col: "DEADLINE_PURCHASE", name: "매입마감", size: "200px" },
-          { col: "PURCHASE_MINUS", name: "매입차이", size: "200px" },
-          { col: "STANDARD_PRICE", name: "금액표준", size: "200px" },
-          { col: "DEADLINE_PRICE", name: "금액마감", size: "200px" },
+          { col: "STANDARD_PURCHASE", name: "매입표준", size: "110px" },
+          { col: "DEADLINE_PURCHASE", name: "매입마감", size: "110px" },
+          { col: "PURCHASE_MINUS", name: "매입차이", size: "140px" },
+          { col: "STANDARD_PRICE", name: "금액표준", size: "140px" },
+          { col: "DEADLINE_PRICE", name: "금액마감", size: "140px" },
           { col: "PRICE_MINUS", name: "금액차이"},          
         ],
       },

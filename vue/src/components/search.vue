@@ -37,6 +37,8 @@ export default {
     searchListData: Array,
     listData: Array,
     searchcolumn: String,
+    searchAry: Array,
+
   },
   data() {
     return {
@@ -49,11 +51,21 @@ export default {
   methods: {
     getBtnSearch() {
       let searchTxt = this.searchData.trim();
-      if (searchTxt) {
+      if (searchTxt) {        
         this.searchListData = this.listData;
         let newData = this.searchListData.filter((ele) => {
           var re = new RegExp(searchTxt);
-          return re.test(ele[this.searchcolumn]);
+          let col, retVal=false;
+          for(let i=0;i<this.searchAry.length;i++){
+            col=this.searchAry[i];
+            if(re.test(ele[col])){
+              retVal=true;
+              break;
+            }
+          }
+          
+          //return re.test(ele[this.searchcolumn]) || ;
+          return retVal;
         });
 
         this.$emit("searchresult", newData);

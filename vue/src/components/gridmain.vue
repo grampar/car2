@@ -13,7 +13,7 @@
           :name="excelName"
         >
           <span>
-            <button class="btn btn-c-primary">Excel Download</button>
+            <button class="btn btn-c-primary">엘셀 Down</button>
           </span>
         </downloadExcel>
       </div>

@@ -9,7 +9,7 @@
           :search-list-data="Item.searchListData"
           :list-data="Item.searchListData"
           @searchresult="searchResultItem"
-          searchcolumn="ITEM_NO"
+          :searchAry="Item.searchAry"
         />
       </div>
       <div style="display:flex;flex-direction: row">
@@ -52,6 +52,7 @@ export default {
   data() {
     return {
       Item: {
+        searchAry:['ITEM_NO', 'ITEM_NM'],
         listMeta: {
           clickcallback: function(vm, data) {            
             vm.$options.parent.getSrcItemList(data.ITEM_NO);
@@ -61,7 +62,7 @@ export default {
             { col: "ITEM_NM", name: "품명" },            
           ],
         },
-        listData: [],
+        listData: [],        
         searchListData: [],
         headerButtons: [
           {

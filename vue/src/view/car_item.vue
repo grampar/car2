@@ -9,7 +9,7 @@
           :search-list-data="Item.searchListData"
           :list-data="Item.searchListData"
           @searchresult="searchResultItem"
-          searchcolumn="ITEM_NO"
+          :searchAry="searchAry"
         />
       </div>
       <div style="display:flex;flex-direction: row">
@@ -50,6 +50,7 @@ export default {
   name: "car",
   data() {
     return {
+      searchAry:['ITEM_NO', 'ITEM_NM'],
       Item: {
         listMeta: {
           clickcallback: function(vm, data) {            
@@ -113,8 +114,7 @@ export default {
   updated() {},
   methods: {
     searchResultItem(searchData) {
-      if (searchData) {
-        this.Item.listData.splice(0, this.Item.listData.length);
+      if (searchData) {        
         this.Item.listData = searchData;
       } else {
         this.getItemList();

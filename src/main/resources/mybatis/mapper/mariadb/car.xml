@@ -102,13 +102,15 @@
 				A.ITEM_NO 
 				,GROUP_CONCAT(B.CAR_NM SEPARATOR '|') AS CAR_NM
 			FROM CAR_ITEM A
-			INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE 
+			INNER JOIN CAR B ON A.CAR_CODE =B.CAR_CODE
+			where 1=1
+			<if test="carCode != null and carCode != ''">
+				AND A.CAR_CODE = #{carCode}
+			</if>	 
 			GROUP BY ITEM_NO
 		) C ON A.ITEM_NO=C.ITEM_NO
 		WHERE A.MON =#{mon}
-		<if test="carCode != null and carCode != ''">
-			AND A.CAR_CODE = #{carCode}
-		</if>	
+		
 			
     </select>
     

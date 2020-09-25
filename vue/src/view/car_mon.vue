@@ -12,7 +12,7 @@
             :search-list-data="Raw.searchListData"
             :list-data="Raw.searchListData"
             @searchresult="searchResultRaw"
-            searchcolumn="CAR_CODE"
+            :searchAry="Raw.searchAry"
           />
           <gridmain
             :list-data="Raw.listData"
@@ -30,7 +30,7 @@
             :search-list-data="Sum.searchListData"
             :list-data="Sum.searchListData"
             @searchresult="searchResultSum"
-            searchcolumn="ITEM_NO"
+            :searchAry="Sum.searchAry"
           />
           <gridmain
             :list-data="Sum.listData"
@@ -57,14 +57,17 @@ export default {
   name: "car",
   data() {
     return {
-      Raw: {
+      Raw: {        
+        searchAry:['CAR_CODE', 'CAR_NM'],
         listMeta: {          
+          clickcallback: function(vm, data) {            
+            vm.$options.parent.getSumList(data.CAR_CODE);
+          },          
           meta: [
             { col: "MON", name: "월", size: "100px" },
             { col: "CAR_CODE", name: "자동차코드", size: "150px" },
             { col: "CAR_NM", name: "자동차명", size: "300px" },            
             { col: "CNT", name: "수량"},
-
             ],
         },
         listData: [],
@@ -99,6 +102,7 @@ export default {
         totalCount: 0,
       },
       Sum: {
+        searchAry:['ITEM_NO', 'ITEM_NM'],
         listMeta: {
           callback: function(vm, data) {
             vm.$options.parent.showLayerPopup(data);
@@ -185,11 +189,14 @@ export default {
           console.error(error);
         });
     },
-    async getSumList() {
+    async getSumList(carCode) {
       let me = this;
       let param = {
         mon: this.getMon()      
       };
+      if(carCode){
+        param['carCode']=carCode
+      }
       carApi
         .getCarMonSumList(param)
         .then((result) => {

@@ -9,8 +9,8 @@
       <search
         :search-list-data="searchListData"
         :list-data="searchListData"
-        @searchresult="searchResult"
-        searchcolumn="ITEM_NO"
+        @searchresult="searchResult"        
+        :searchAry="searchAry"
       />
       <gridmain
         :list-data="listData"
@@ -172,6 +172,7 @@ export default {
   name: "mediaserver",
   data() {
     return {
+      searchAry:['ITEM_NO', 'ITEM_NM'],
       listMeta: {
         dblclickCallback: function (vm, data) {
           vm.$options.parent.showLayerPopup(data);
